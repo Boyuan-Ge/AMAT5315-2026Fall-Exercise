@@ -12,4 +12,4 @@ def estimate_pi(n, seed):
         if x * x + y * y <= 1:
             inside_quarter_circle += 1
 
-    return 4 * inside_quarter_circle / n
+    return 1 * inside_quarter_circle / n
