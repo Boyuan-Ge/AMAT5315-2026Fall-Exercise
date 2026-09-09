@@ -25,8 +25,8 @@ pub fn lj_force(r: f64) -> f64 {
 mod tests {
     use super::{
         Boundary, Euler, ForceMethod, PairModel, System, VelocityVerlet, evaluate_forces,
-        greeting, lj_energy, lj_force, minimum_image, shifted_energy, simulate_steps,
-        triangular_lattice,
+        greeting, kinetic_temperature, lj_energy, lj_force, minimum_image, seeded_velocities,
+        shifted_energy, simulate_steps, triangular_lattice,
     };
 
     #[test]
@@ -99,5 +99,19 @@ mod tests {
         let system = triangular_lattice(100, 0.8).unwrap();
         assert!((system.box_size()[0] - 12.014_057_070_673_772).abs() < 1.0e-10);
         assert!((system.box_size()[1] - 10.404_478_625_719_541).abs() < 1.0e-10);
+    }
+
+    #[test]
+    fn prepared_velocities_are_repeatable_centered_and_at_target_temperature() {
+        let first = seeded_velocities(100, 0.5, 2026).unwrap();
+        let second = seeded_velocities(100, 0.5, 2026).unwrap();
+        assert_eq!(first, second);
+
+        let mean = first.iter().fold([0.0, 0.0], |sum, velocity| {
+            [sum[0] + velocity[0], sum[1] + velocity[1]]
+        });
+        assert!((mean[0] / 100.0).abs() < 1.0e-12);
+        assert!((mean[1] / 100.0).abs() < 1.0e-12);
+        assert!((kinetic_temperature(&first) - 0.5).abs() < 1.0e-12);
     }
 }
