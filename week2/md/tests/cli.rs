@@ -1,3 +1,4 @@
+use md::{Frame, RunMetadata, TrajectoryWriter};
 use serde_json::Value;
 use std::fs;
 use std::process::Command;
@@ -134,4 +135,59 @@ fn default_run_passes_independent_physics_checks() {
     assert!(stdout.contains("T_speed"));
     assert!(stdout.contains("chi2/dof"));
     assert!(stdout.contains("PASS"));
+}
+
+#[test]
+fn video_writes_an_mp4_from_saved_frames() {
+    let temporary = tempdir().unwrap();
+    let metadata = RunMetadata {
+        n: 4,
+        rho: 0.16,
+        box_size: [5.0, 5.0],
+        dt: 0.01,
+        temperature: 0.5,
+        eq_steps: 0,
+        steps: 2,
+        sample_every: 1,
+        seed: 2026,
+        integrator: "velocity-verlet".to_string(),
+        force: "naive".to_string(),
+        ramp_to: None,
+    };
+    let mut writer = TrajectoryWriter::create(temporary.path(), &metadata).unwrap();
+    for (step, offset) in [(1, 0.0), (2, 0.1)] {
+        writer
+            .write_frame(&Frame {
+                step,
+                t: step as f64 * 0.01,
+                pos: vec![
+                    [1.0 + offset, 1.0],
+                    [2.0 + offset, 1.0],
+                    [1.0 + offset, 2.0],
+                    [2.0 + offset, 2.0],
+                ],
+                vel: vec![[0.1, 0.0]; 4],
+                e_pot: 0.0,
+                e_kin: 0.02,
+            })
+            .unwrap();
+    }
+    writer.finish().unwrap();
+    let movie = temporary.path().join("smoke.mp4");
+
+    let output = md_command()
+        .arg("video")
+        .arg(temporary.path())
+        .arg("--out")
+        .arg(&movie)
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let bytes = fs::read(movie).unwrap();
+    assert!(bytes.len() > 32);
+    assert_eq!(&bytes[4..8], b"ftyp");
 }

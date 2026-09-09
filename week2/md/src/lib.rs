@@ -28,8 +28,8 @@ mod tests {
     use super::{
         Boundary, Euler, ForceMethod, Frame, PairModel, RunMetadata, System, TrajectoryWriter,
         VelocityVerlet, check_trajectory, evaluate_forces, greeting, kinetic_temperature,
-        lj_energy, lj_force, minimum_image, seeded_velocities, shifted_energy, simulate_steps,
-        speed_bin, triangular_lattice,
+        lj_energy, lj_force, minimum_image, radial_distribution, seeded_velocities,
+        shifted_energy, simulate_steps, speed_bin, triangular_lattice,
     };
 
     #[test]
@@ -157,5 +157,21 @@ mod tests {
 
         let error = check_trajectory(temporary.path()).unwrap_err();
         assert!(error.to_string().contains("stored energy"));
+    }
+
+    #[test]
+    fn radial_distribution_counts_a_known_neighbor_shell() {
+        let frames = vec![Frame {
+            step: 1,
+            t: 0.01,
+            pos: vec![[1.0, 1.0], [2.1, 1.0]],
+            vel: vec![[0.0, 0.0]; 2],
+            e_pot: 0.0,
+            e_kin: 0.0,
+        }];
+        let distribution = radial_distribution(&frames, [10.0, 10.0], 0.02, 10);
+        assert_eq!(distribution.len(), 10);
+        assert!((distribution[2].0 - 1.25).abs() < 1.0e-12);
+        assert!((distribution[2].1 - 12.732_395_447_351_626).abs() < 1.0e-10);
     }
 }
