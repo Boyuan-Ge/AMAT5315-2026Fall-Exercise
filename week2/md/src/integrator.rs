@@ -24,6 +24,7 @@ impl Integrator for Euler {
             vel[0] += force[0] / system.mass * dt;
             vel[1] += force[1] / system.mass * dt;
         }
+        system.wrap_positions();
         let potential = system.refresh_forces();
         system.kinetic_energy() + potential
     }
@@ -50,6 +51,7 @@ impl Integrator for VelocityVerlet {
             pos[1] += vel[1] * dt;
         }
 
+        system.wrap_positions();
         let potential = system.refresh_forces();
         for (vel, force) in system.vel.iter_mut().zip(system.force.iter()) {
             vel[0] += force[0] / system.mass * half_dt;

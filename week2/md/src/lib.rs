@@ -1,7 +1,15 @@
+mod force;
+mod initialise;
 mod integrator;
+mod potential;
 mod system;
 
+pub use force::{ForceMethod, evaluate_forces, minimum_image};
+pub use initialise::{
+    kinetic_temperature, rescale_temperature, seeded_velocities, triangular_lattice,
+};
 pub use integrator::{EnergyTrace, Euler, Integrator, VelocityVerlet, simulate_steps};
+pub use potential::{lj_energy, lj_force, shifted_energy};
 pub use system::{Boundary, PairModel, System};
 
 /// Return the greeting printed by the `md` executable.
@@ -9,24 +17,12 @@ pub fn greeting() -> &'static str {
     "Hello, world!"
 }
 
-/// Lennard-Jones pair potential in reduced units (epsilon = sigma = 1).
-pub fn lj_energy(r: f64) -> f64 {
-    let inv_r6 = r.powi(-6);
-    4.0 * (inv_r6 * inv_r6 - inv_r6)
-}
-
-/// Radial Lennard-Jones force in reduced units.
-pub fn lj_force(r: f64) -> f64 {
-    let inv_r6 = r.powi(-6);
-    24.0 / r * (2.0 * inv_r6 * inv_r6 - inv_r6)
-}
-
 #[cfg(test)]
 mod tests {
     use super::{
-        Boundary, Euler, ForceMethod, PairModel, System, VelocityVerlet, evaluate_forces,
-        greeting, kinetic_temperature, lj_energy, lj_force, minimum_image, seeded_velocities,
-        shifted_energy, simulate_steps, triangular_lattice,
+        Boundary, Euler, ForceMethod, PairModel, System, VelocityVerlet, evaluate_forces, greeting,
+        kinetic_temperature, lj_energy, lj_force, minimum_image, seeded_velocities, shifted_energy,
+        simulate_steps, triangular_lattice,
     };
 
     #[test]

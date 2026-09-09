@@ -1,4 +1,4 @@
-use crate::{lj_energy, lj_force};
+use crate::force::{ForceMethod, evaluate_forces, potential_energy};
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum Boundary {
@@ -37,26 +37,7 @@ impl System {
     }
 
     pub fn refresh_forces(&mut self) -> f64 {
-        self.force.fill([0.0, 0.0]);
-        let mut potential = 0.0;
-
-        for i in 0..self.pos.len() {
-            for j in (i + 1)..self.pos.len() {
-                let dx = self.pos[i][0] - self.pos[j][0];
-                let dy = self.pos[i][1] - self.pos[j][1];
-                let r = dx.hypot(dy);
-                let radial_force = lj_force(r);
-                let fx = radial_force * dx / r;
-                let fy = radial_force * dy / r;
-                self.force[i][0] += fx;
-                self.force[i][1] += fy;
-                self.force[j][0] -= fx;
-                self.force[j][1] -= fy;
-                potential += lj_energy(r);
-            }
-        }
-
-        potential
+        evaluate_forces(self, ForceMethod::Naive)
     }
 
     pub fn kinetic_energy(&self) -> f64 {
@@ -67,18 +48,26 @@ impl System {
     }
 
     pub fn potential_energy(&self) -> f64 {
-        let mut potential = 0.0;
-        for i in 0..self.pos.len() {
-            for j in (i + 1)..self.pos.len() {
-                let dx = self.pos[i][0] - self.pos[j][0];
-                let dy = self.pos[i][1] - self.pos[j][1];
-                potential += lj_energy(dx.hypot(dy));
-            }
-        }
-        potential
+        potential_energy(self)
     }
 
     pub fn total_energy(&self) -> f64 {
         self.kinetic_energy() + self.potential_energy()
+    }
+
+    pub fn box_size(&self) -> [f64; 2] {
+        match self.boundary {
+            Boundary::Periodic { box_size } => box_size,
+            Boundary::Open => panic!("an open system has no periodic box"),
+        }
+    }
+
+    pub fn wrap_positions(&mut self) {
+        if let Boundary::Periodic { box_size } = self.boundary {
+            for position in &mut self.pos {
+                position[0] = position[0].rem_euclid(box_size[0]);
+                position[1] = position[1].rem_euclid(box_size[1]);
+            }
+        }
     }
 }
