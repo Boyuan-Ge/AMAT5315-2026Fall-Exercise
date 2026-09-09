@@ -23,7 +23,11 @@ pub fn lj_force(r: f64) -> f64 {
 
 #[cfg(test)]
 mod tests {
-    use super::{Euler, System, VelocityVerlet, greeting, lj_energy, lj_force, simulate_steps};
+    use super::{
+        Boundary, Euler, ForceMethod, PairModel, System, VelocityVerlet, evaluate_forces,
+        greeting, lj_energy, lj_force, minimum_image, shifted_energy, simulate_steps,
+        triangular_lattice,
+    };
 
     #[test]
     fn greeting_is_hello_world() {
@@ -57,5 +61,43 @@ mod tests {
 
         assert!(verlet.max_relative_error < 1.0e-3);
         assert!(euler.final_relative_error.abs() > 0.5);
+    }
+
+    #[test]
+    fn minimum_image_crosses_nearest_boundary() {
+        assert!((minimum_image(9.8, 10.0) + 0.2).abs() < 1.0e-12);
+    }
+
+    #[test]
+    fn shifted_energy_is_continuous_just_inside_cutoff() {
+        assert!(shifted_energy(2.5 - 1.0e-8, 2.5).abs() < 1.0e-8);
+        assert_eq!(shifted_energy(2.5, 2.5), 0.0);
+    }
+
+    #[test]
+    fn internal_forces_sum_to_zero() {
+        let mut system = System {
+            pos: vec![[0.2, 0.3], [1.4, 0.4], [4.9, 0.2], [2.4, 3.0]],
+            vel: vec![[0.0, 0.0]; 4],
+            force: vec![[0.0, 0.0]; 4],
+            mass: 1.0,
+            boundary: Boundary::Periodic {
+                box_size: [5.0, 5.0],
+            },
+            pair_model: PairModel::ShiftedCutoff { rc: 2.5 },
+        };
+        evaluate_forces(&mut system, ForceMethod::Naive);
+        let sum = system
+            .force
+            .iter()
+            .fold([0.0, 0.0], |s, f| [s[0] + f[0], s[1] + f[1]]);
+        assert!(sum[0].abs() < 1.0e-10 && sum[1].abs() < 1.0e-10);
+    }
+
+    #[test]
+    fn contract_lattice_has_expected_box() {
+        let system = triangular_lattice(100, 0.8).unwrap();
+        assert!((system.box_size()[0] - 12.014_057_070_673_772).abs() < 1.0e-10);
+        assert!((system.box_size()[1] - 10.404_478_625_719_541).abs() < 1.0e-10);
     }
 }
