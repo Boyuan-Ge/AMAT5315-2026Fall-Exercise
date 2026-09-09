@@ -49,5 +49,10 @@ quality, and measured README claims.
 - Timing claims trace to `benchmark-results.csv`; profile claims trace to the
   two Samply screenshots; heating claims trace to the published 400-particle,
   200-frame trajectory.
+- A fresh anonymous clone of public commit `ba7a4e8` compiled from scratch:
+  all 23 tests passed, `make reproduce` completed, and the independent checker
+  printed the three passing measurements followed by `PASS`.
+- The unauthenticated Pages URL returned HTTP 200; its public `run.json` reports
+  400 particles and a 0.2-to-1.2 ramp, and its public trajectory has 200 frames.
 
 No unresolved correctness or unsupported-claim finding remains.
