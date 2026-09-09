@@ -8,7 +8,7 @@ pub fn triangular_lattice(n: usize, rho: f64) -> Result<System, String> {
         return Err("n and rho must be positive".to_string());
     }
     let side = (n as f64).sqrt() as usize;
-    if side * side != n || side % 2 != 0 {
+    if side * side != n || !side.is_multiple_of(2) {
         return Err("n must be an even square (for example 100, 400, or 1600)".to_string());
     }
 
