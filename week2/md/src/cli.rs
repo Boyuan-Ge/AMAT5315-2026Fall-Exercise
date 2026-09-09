@@ -1,6 +1,6 @@
 use crate::{
     ForceMethod, Frame, Integrator, RunMetadata, TrajectoryWriter, VelocityVerlet,
-    rescale_temperature, seeded_velocities, triangular_lattice,
+    check_trajectory, rescale_temperature, seeded_velocities, triangular_lattice,
 };
 use clap::{Args, Parser, Subcommand, ValueEnum};
 use std::path::{Path, PathBuf};
@@ -15,6 +15,7 @@ struct Cli {
 #[derive(Subcommand)]
 enum Command {
     Run(RunArgs),
+    Check { directory: PathBuf },
 }
 
 #[derive(Clone, Copy, Debug, ValueEnum)]
@@ -151,6 +152,24 @@ pub fn run_cli() -> Result<(), Box<dyn std::error::Error>> {
                 args.steps / args.sample_every,
                 args.out.display()
             );
+        }
+        Some(Command::Check { directory }) => {
+            let report = check_trajectory(&directory)?;
+            println!(
+                "secular drift = {:.6e} (limit < 2e-3)",
+                report.secular_drift
+            );
+            println!(
+                "T_speed = {:.6} (target 0.5, tolerance 0.05)",
+                report.speed_temperature
+            );
+            println!("chi2/dof = {:.6} (limit < 2)", report.chi2_per_dof);
+            if report.passed() {
+                println!("PASS");
+            } else {
+                println!("FAIL");
+                return Err("trajectory failed one or more physics checks".into());
+            }
         }
     }
     Ok(())

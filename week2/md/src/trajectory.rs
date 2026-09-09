@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 use std::fs::{self, File};
-use std::io::{BufWriter, Write};
+use std::io::{BufRead, BufReader, BufWriter, Write};
 use std::path::Path;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -59,4 +59,23 @@ impl TrajectoryWriter {
         self.frames.flush()?;
         Ok(())
     }
+}
+
+pub fn read_trajectory(
+    directory: &Path,
+) -> Result<(RunMetadata, Vec<Frame>), Box<dyn std::error::Error>> {
+    let metadata: RunMetadata =
+        serde_json::from_reader(BufReader::new(File::open(directory.join("run.json"))?))?;
+    let frame_file = BufReader::new(File::open(directory.join("traj.jsonl"))?);
+    let mut frames = Vec::new();
+    for (index, line) in frame_file.lines().enumerate() {
+        let line = line?;
+        if line.trim().is_empty() {
+            continue;
+        }
+        let frame = serde_json::from_str(&line)
+            .map_err(|error| format!("malformed trajectory line {}: {error}", index + 1))?;
+        frames.push(frame);
+    }
+    Ok((metadata, frames))
 }
