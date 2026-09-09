@@ -29,9 +29,9 @@ pub fn greeting() -> &'static str {
 mod tests {
     use super::{
         Boundary, Euler, ForceMethod, Frame, PairModel, RunMetadata, System, TrajectoryWriter,
-        VelocityVerlet, check_trajectory, evaluate_forces, greeting, kinetic_temperature,
-        lj_energy, lj_force, minimum_image, radial_distribution, seeded_velocities, shifted_energy,
-        simulate_steps, speed_bin, triangular_lattice,
+        VelocityVerlet, cell_candidate_pairs, check_trajectory, evaluate_forces, greeting,
+        kinetic_temperature, lj_energy, lj_force, minimum_image, radial_distribution,
+        seeded_velocities, shifted_energy, simulate_steps, speed_bin, triangular_lattice,
     };
 
     #[test]
@@ -175,5 +175,69 @@ mod tests {
         assert_eq!(distribution.len(), 10);
         assert!((distribution[2].0 - 1.25).abs() < 1.0e-12);
         assert!((distribution[2].1 - 12.732_395_447_351_626).abs() < 1.0e-10);
+    }
+
+    fn assert_force_methods_match(system: System) {
+        let mut naive = system.clone();
+        let mut cells = system;
+        let naive_energy = evaluate_forces(&mut naive, ForceMethod::Naive);
+        let cells_energy = evaluate_forces(&mut cells, ForceMethod::Cells);
+        let energy_tolerance = 1.0e-10 * naive_energy.abs().max(1.0);
+        assert!((naive_energy - cells_energy).abs() < energy_tolerance);
+        for (naive_force, cells_force) in naive.force.iter().zip(cells.force.iter()) {
+            for axis in 0..2 {
+                let tolerance = 1.0e-10 * naive_force[axis].abs().max(1.0);
+                assert!((naive_force[axis] - cells_force[axis]).abs() < tolerance);
+            }
+        }
+    }
+
+    #[test]
+    fn cell_list_matches_naive_on_a_perturbed_lattice() {
+        let mut system = triangular_lattice(100, 0.8).unwrap();
+        for (index, position) in system.pos.iter_mut().take(12).enumerate() {
+            position[0] += 0.013 * (index as f64 + 1.0);
+            position[1] -= 0.007 * (index as f64 + 1.0);
+        }
+        system.wrap_positions();
+        assert_force_methods_match(system);
+    }
+
+    #[test]
+    fn cell_list_matches_naive_across_a_periodic_boundary_and_at_cutoff() {
+        for positions in [
+            vec![[0.1, 1.0], [9.9, 1.0]],
+            vec![[1.0, 1.0], [3.5, 1.0]],
+        ] {
+            assert_force_methods_match(System {
+                force: vec![[0.0, 0.0]; positions.len()],
+                vel: vec![[0.0, 0.0]; positions.len()],
+                pos: positions,
+                mass: 1.0,
+                boundary: Boundary::Periodic {
+                    box_size: [10.0, 10.0],
+                },
+                pair_model: PairModel::ShiftedCutoff { rc: 2.5 },
+            });
+        }
+    }
+
+    #[test]
+    fn two_cell_box_generates_each_particle_pair_once() {
+        let system = System {
+            pos: vec![[0.1, 0.1], [2.0, 0.3], [3.0, 3.1], [5.0, 5.0]],
+            vel: vec![[0.0, 0.0]; 4],
+            force: vec![[0.0, 0.0]; 4],
+            mass: 1.0,
+            boundary: Boundary::Periodic {
+                box_size: [5.2, 5.2],
+            },
+            pair_model: PairModel::ShiftedCutoff { rc: 2.5 },
+        };
+        let pairs = cell_candidate_pairs(&system).unwrap();
+        let unique: std::collections::HashSet<_> = pairs.iter().copied().collect();
+        assert_eq!(pairs.len(), unique.len());
+        assert_eq!(pairs.len(), 6);
+        assert_force_methods_match(system);
     }
 }
