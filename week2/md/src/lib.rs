@@ -10,7 +10,7 @@ mod trajectory;
 
 pub use analysis::{CheckReport, check_trajectory, radial_distribution, speed_bin};
 pub use cli::{RunOptions, run_cli, run_to_dir};
-pub use force::{ForceMethod, evaluate_forces, minimum_image};
+pub use force::{ForceMethod, cell_candidate_pairs, evaluate_forces, minimum_image};
 pub use initialise::{
     kinetic_temperature, rescale_temperature, seeded_velocities, triangular_lattice,
 };
@@ -205,10 +205,7 @@ mod tests {
 
     #[test]
     fn cell_list_matches_naive_across_a_periodic_boundary_and_at_cutoff() {
-        for positions in [
-            vec![[0.1, 1.0], [9.9, 1.0]],
-            vec![[1.0, 1.0], [3.5, 1.0]],
-        ] {
+        for positions in [vec![[0.1, 1.0], [9.9, 1.0]], vec![[1.0, 1.0], [3.5, 1.0]]] {
             assert_force_methods_match(System {
                 force: vec![[0.0, 0.0]; positions.len()],
                 vel: vec![[0.0, 0.0]; positions.len()],

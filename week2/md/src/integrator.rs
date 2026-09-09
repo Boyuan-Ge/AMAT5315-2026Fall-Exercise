@@ -1,8 +1,12 @@
-use crate::System;
+use crate::{ForceMethod, System};
 
 pub trait Integrator {
     fn name(&self) -> &'static str;
-    fn step(&self, system: &mut System, dt: f64) -> f64;
+    fn step_with_force(&self, system: &mut System, dt: f64, force_method: ForceMethod) -> f64;
+
+    fn step(&self, system: &mut System, dt: f64) -> f64 {
+        self.step_with_force(system, dt, ForceMethod::Naive)
+    }
 }
 
 pub struct Euler;
@@ -12,7 +16,7 @@ impl Integrator for Euler {
         "forward-euler"
     }
 
-    fn step(&self, system: &mut System, dt: f64) -> f64 {
+    fn step_with_force(&self, system: &mut System, dt: f64, force_method: ForceMethod) -> f64 {
         for ((pos, vel), force) in system
             .pos
             .iter_mut()
@@ -25,7 +29,7 @@ impl Integrator for Euler {
             vel[1] += force[1] / system.mass * dt;
         }
         system.wrap_positions();
-        let potential = system.refresh_forces();
+        let potential = system.refresh_forces_with(force_method);
         system.kinetic_energy() + potential
     }
 }
@@ -37,7 +41,7 @@ impl Integrator for VelocityVerlet {
         "velocity-verlet"
     }
 
-    fn step(&self, system: &mut System, dt: f64) -> f64 {
+    fn step_with_force(&self, system: &mut System, dt: f64, force_method: ForceMethod) -> f64 {
         let half_dt = 0.5 * dt;
         for ((pos, vel), force) in system
             .pos
@@ -52,7 +56,7 @@ impl Integrator for VelocityVerlet {
         }
 
         system.wrap_positions();
-        let potential = system.refresh_forces();
+        let potential = system.refresh_forces_with(force_method);
         for (vel, force) in system.vel.iter_mut().zip(system.force.iter()) {
             vel[0] += force[0] / system.mass * half_dt;
             vel[1] += force[1] / system.mass * half_dt;

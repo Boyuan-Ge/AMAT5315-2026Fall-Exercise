@@ -40,6 +40,10 @@ impl System {
         evaluate_forces(self, ForceMethod::Naive)
     }
 
+    pub fn refresh_forces_with(&mut self, method: ForceMethod) -> f64 {
+        evaluate_forces(self, method)
+    }
+
     pub fn kinetic_energy(&self) -> f64 {
         self.vel
             .iter()

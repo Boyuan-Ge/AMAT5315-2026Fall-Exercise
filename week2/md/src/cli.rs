@@ -28,6 +28,7 @@ enum Command {
 #[derive(Clone, Copy, Debug, ValueEnum)]
 enum ForceChoice {
     Naive,
+    Cells,
 }
 
 #[derive(Args)]
@@ -48,7 +49,7 @@ struct RunArgs {
     sample_every: usize,
     #[arg(long, default_value_t = 2026)]
     seed: u64,
-    #[arg(long, value_enum, default_value_t = ForceChoice::Naive)]
+    #[arg(long, value_enum, default_value_t = ForceChoice::Cells)]
     force: ForceChoice,
     #[arg(long)]
     out: PathBuf,
@@ -94,10 +95,10 @@ pub fn run_to_dir(
     let mut system = triangular_lattice(options.n, options.rho)?;
     system.vel = seeded_velocities(options.n, options.temperature, options.seed)?;
     let integrator = VelocityVerlet;
-    system.refresh_forces();
+    system.refresh_forces_with(options.force);
 
     for step in 1..=options.eq_steps {
-        integrator.step(&mut system, options.dt);
+        integrator.step_with_force(&mut system, options.dt, options.force);
         if step % 50 == 0 {
             rescale_temperature(&mut system.vel, options.temperature)?;
         }
@@ -114,13 +115,13 @@ pub fn run_to_dir(
         sample_every: options.sample_every,
         seed: options.seed,
         integrator: integrator.name().to_string(),
-        force: "naive".to_string(),
+        force: options.force.name().to_string(),
         ramp_to: options.ramp_to,
     };
     let mut writer = TrajectoryWriter::create(directory, &metadata)?;
 
     for step in 1..=options.steps {
-        integrator.step(&mut system, options.dt);
+        integrator.step_with_force(&mut system, options.dt, options.force);
         if step % options.sample_every == 0 {
             writer.write_frame(&Frame {
                 step,
@@ -150,7 +151,10 @@ pub fn run_cli() -> Result<(), Box<dyn std::error::Error>> {
                 steps: args.steps,
                 sample_every: args.sample_every,
                 seed: args.seed,
-                force: ForceMethod::Naive,
+                force: match args.force {
+                    ForceChoice::Naive => ForceMethod::Naive,
+                    ForceChoice::Cells => ForceMethod::Cells,
+                },
                 ramp_to: None,
             };
             run_to_dir(&options, &args.out)?;

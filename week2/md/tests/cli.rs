@@ -108,10 +108,9 @@ fn run_defaults_to_cell_list_forces() {
         "{}",
         String::from_utf8_lossy(&output.stderr)
     );
-    let metadata: Value = serde_json::from_str(
-        &fs::read_to_string(temporary.path().join("run.json")).unwrap(),
-    )
-    .unwrap();
+    let metadata: Value =
+        serde_json::from_str(&fs::read_to_string(temporary.path().join("run.json")).unwrap())
+            .unwrap();
     assert_eq!(metadata["force"], "cells");
 }
 
