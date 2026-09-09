@@ -17,7 +17,9 @@ pub fn lj_force(r: f64) -> f64 {
 
 #[cfg(test)]
 mod tests {
-    use super::{greeting, lj_energy, lj_force};
+    use super::{
+        greeting, lj_energy, lj_force, simulate_steps, Euler, System, VelocityVerlet,
+    };
 
     #[test]
     fn greeting_is_hello_world() {
@@ -42,5 +44,14 @@ mod tests {
                 "force mismatch at r={r}: analytic={force}, numerical={numerical_force}"
             );
         }
+    }
+
+    #[test]
+    fn verlet_conserves_dimer_energy_while_euler_drifts() {
+        let euler = simulate_steps(System::dimer(), &Euler, 0.01, 500);
+        let verlet = simulate_steps(System::dimer(), &VelocityVerlet, 0.01, 500);
+
+        assert!(verlet.max_relative_error < 1.0e-3);
+        assert!(euler.final_relative_error.abs() > 0.5);
     }
 }
