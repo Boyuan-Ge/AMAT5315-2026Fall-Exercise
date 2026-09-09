@@ -1,6 +1,6 @@
 use crate::{
     ForceMethod, Frame, Integrator, RunMetadata, TrajectoryWriter, VelocityVerlet,
-    check_trajectory, rescale_temperature, seeded_velocities, triangular_lattice,
+    check_trajectory, render_video, rescale_temperature, seeded_velocities, triangular_lattice,
 };
 use clap::{Args, Parser, Subcommand, ValueEnum};
 use std::path::{Path, PathBuf};
@@ -15,7 +15,14 @@ struct Cli {
 #[derive(Subcommand)]
 enum Command {
     Run(RunArgs),
-    Check { directory: PathBuf },
+    Check {
+        directory: PathBuf,
+    },
+    Video {
+        directory: PathBuf,
+        #[arg(long)]
+        out: PathBuf,
+    },
 }
 
 #[derive(Clone, Copy, Debug, ValueEnum)]
@@ -170,6 +177,10 @@ pub fn run_cli() -> Result<(), Box<dyn std::error::Error>> {
                 println!("FAIL");
                 return Err("trajectory failed one or more physics checks".into());
             }
+        }
+        Some(Command::Video { directory, out }) => {
+            render_video(&directory, &out)?;
+            println!("wrote {}", out.display());
         }
     }
     Ok(())

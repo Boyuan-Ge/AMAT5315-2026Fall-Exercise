@@ -4,10 +4,11 @@ mod force;
 mod initialise;
 mod integrator;
 mod potential;
+mod render;
 mod system;
 mod trajectory;
 
-pub use analysis::{CheckReport, check_trajectory, speed_bin};
+pub use analysis::{CheckReport, check_trajectory, radial_distribution, speed_bin};
 pub use cli::{RunOptions, run_cli, run_to_dir};
 pub use force::{ForceMethod, evaluate_forces, minimum_image};
 pub use initialise::{
@@ -15,6 +16,7 @@ pub use initialise::{
 };
 pub use integrator::{EnergyTrace, Euler, Integrator, VelocityVerlet, simulate_steps};
 pub use potential::{lj_energy, lj_force, shifted_energy};
+pub use render::render_video;
 pub use system::{Boundary, PairModel, System};
 pub use trajectory::{Frame, RunMetadata, TrajectoryWriter, read_trajectory};
 
@@ -28,8 +30,8 @@ mod tests {
     use super::{
         Boundary, Euler, ForceMethod, Frame, PairModel, RunMetadata, System, TrajectoryWriter,
         VelocityVerlet, check_trajectory, evaluate_forces, greeting, kinetic_temperature,
-        lj_energy, lj_force, minimum_image, radial_distribution, seeded_velocities,
-        shifted_energy, simulate_steps, speed_bin, triangular_lattice,
+        lj_energy, lj_force, minimum_image, radial_distribution, seeded_velocities, shifted_energy,
+        simulate_steps, speed_bin, triangular_lattice,
     };
 
     #[test]

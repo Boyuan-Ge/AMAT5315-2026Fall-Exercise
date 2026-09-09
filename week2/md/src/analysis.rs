@@ -1,4 +1,4 @@
-use crate::{Boundary, PairModel, System, read_trajectory};
+use crate::{Boundary, Frame, PairModel, System, minimum_image, read_trajectory};
 use std::path::Path;
 
 #[derive(Clone, Debug)]
@@ -19,6 +19,42 @@ impl CheckReport {
 pub fn speed_bin(speed: f64, temperature: f64) -> usize {
     let cumulative = 1.0 - (-speed * speed / (2.0 * temperature)).exp();
     ((24.0 * cumulative).floor() as usize).min(23)
+}
+
+pub fn radial_distribution(
+    frames: &[Frame],
+    box_size: [f64; 2],
+    rho: f64,
+    bins: usize,
+) -> Vec<(f64, f64)> {
+    if frames.is_empty() || bins == 0 {
+        return Vec::new();
+    }
+    let max_radius = 0.5 * box_size[0].min(box_size[1]);
+    let width = max_radius / bins as f64;
+    let particles = frames[0].pos.len();
+    let mut counts = vec![0usize; bins];
+    for frame in frames {
+        for i in 0..frame.pos.len() {
+            for j in (i + 1)..frame.pos.len() {
+                let dx = minimum_image(frame.pos[i][0] - frame.pos[j][0], box_size[0]);
+                let dy = minimum_image(frame.pos[i][1] - frame.pos[j][1], box_size[1]);
+                let radius = dx.hypot(dy);
+                if radius < max_radius {
+                    counts[(radius / width) as usize] += 2;
+                }
+            }
+        }
+    }
+    (0..bins)
+        .map(|index| {
+            let inner = index as f64 * width;
+            let outer = inner + width;
+            let measured = counts[index] as f64 / (particles * frames.len()) as f64;
+            let expected = rho * std::f64::consts::PI * (outer * outer - inner * inner);
+            ((inner + outer) / 2.0, measured / expected)
+        })
+        .collect()
 }
 
 pub fn check_trajectory(directory: &Path) -> Result<CheckReport, Box<dyn std::error::Error>> {
