@@ -1,6 +1,7 @@
 use crate::{
     ForceMethod, Frame, Integrator, RunMetadata, TrajectoryWriter, VelocityVerlet,
-    check_trajectory, render_video, rescale_temperature, seeded_velocities, triangular_lattice,
+    check_trajectory, ramp_temperature, render_video, rescale_temperature, seeded_velocities,
+    triangular_lattice,
 };
 use clap::{Args, Parser, Subcommand, ValueEnum};
 use std::path::{Path, PathBuf};
@@ -52,6 +53,8 @@ struct RunArgs {
     #[arg(long, value_enum, default_value_t = ForceChoice::Cells)]
     force: ForceChoice,
     #[arg(long)]
+    ramp_to: Option<f64>,
+    #[arg(long)]
     out: PathBuf,
 }
 
@@ -82,6 +85,12 @@ impl RunOptions {
         }
         if !self.temperature.is_finite() || self.temperature <= 0.0 {
             return Err("--temperature must be positive".to_string());
+        }
+        if self
+            .ramp_to
+            .is_some_and(|temperature| !temperature.is_finite() || temperature <= 0.0)
+        {
+            return Err("--ramp-to must be positive".to_string());
         }
         Ok(())
     }
@@ -122,6 +131,13 @@ pub fn run_to_dir(
 
     for step in 1..=options.steps {
         integrator.step_with_force(&mut system, options.dt, options.force);
+        if let Some(final_temperature) = options.ramp_to
+            && step % 50 == 0
+        {
+            let target =
+                ramp_temperature(options.temperature, final_temperature, step, options.steps);
+            rescale_temperature(&mut system.vel, target)?;
+        }
         if step % options.sample_every == 0 {
             writer.write_frame(&Frame {
                 step,
@@ -155,7 +171,7 @@ pub fn run_cli() -> Result<(), Box<dyn std::error::Error>> {
                     ForceChoice::Naive => ForceMethod::Naive,
                     ForceChoice::Cells => ForceMethod::Cells,
                 },
-                ramp_to: None,
+                ramp_to: args.ramp_to,
             };
             run_to_dir(&options, &args.out)?;
             println!(

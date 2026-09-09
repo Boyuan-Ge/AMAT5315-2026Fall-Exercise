@@ -142,10 +142,9 @@ fn run_records_and_applies_linear_heating_ramp() {
         "{}",
         String::from_utf8_lossy(&output.stderr)
     );
-    let metadata: Value = serde_json::from_str(
-        &fs::read_to_string(temporary.path().join("run.json")).unwrap(),
-    )
-    .unwrap();
+    let metadata: Value =
+        serde_json::from_str(&fs::read_to_string(temporary.path().join("run.json")).unwrap())
+            .unwrap();
     assert_eq!(metadata["ramp_to"], 1.2);
 
     let trajectory = fs::read_to_string(temporary.path().join("traj.jsonl")).unwrap();
@@ -161,8 +160,7 @@ fn run_records_and_applies_linear_heating_ramp() {
             .iter()
             .map(|velocity| {
                 let velocity = velocity.as_array().unwrap();
-                velocity[0].as_f64().unwrap().powi(2)
-                    + velocity[1].as_f64().unwrap().powi(2)
+                velocity[0].as_f64().unwrap().powi(2) + velocity[1].as_f64().unwrap().powi(2)
             })
             .sum();
         let thermostat_temperature = twice_kinetic / 6.0;

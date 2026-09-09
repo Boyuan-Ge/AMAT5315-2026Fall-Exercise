@@ -12,7 +12,8 @@ pub use analysis::{CheckReport, check_trajectory, radial_distribution, speed_bin
 pub use cli::{RunOptions, run_cli, run_to_dir};
 pub use force::{ForceMethod, cell_candidate_pairs, evaluate_forces, minimum_image};
 pub use initialise::{
-    kinetic_temperature, rescale_temperature, seeded_velocities, triangular_lattice,
+    kinetic_temperature, ramp_temperature, rescale_temperature, seeded_velocities,
+    triangular_lattice,
 };
 pub use integrator::{EnergyTrace, Euler, Integrator, VelocityVerlet, simulate_steps};
 pub use potential::{lj_energy, lj_force, shifted_energy};

@@ -83,3 +83,10 @@ pub fn seeded_velocities(n: usize, temperature: f64, seed: u64) -> Result<Vec<[f
     rescale_temperature(&mut velocities, temperature)?;
     Ok(velocities)
 }
+
+pub fn ramp_temperature(start: f64, end: f64, step: usize, steps: usize) -> f64 {
+    if steps == 0 {
+        return end;
+    }
+    start + (end - start) * step.min(steps) as f64 / steps as f64
+}
