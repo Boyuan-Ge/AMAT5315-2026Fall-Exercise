@@ -128,3 +128,52 @@ cd week2
 cargo run --manifest-path md/Cargo.toml --release --example scaling -- \
   scaling.png 0.04 0.59 8.95 0.03 0.14 0.68
 ```
+
+## Physics checks
+
+The pair-force unit test compares the analytic radial force with
+`-dU/dr` from a centered finite difference. A separate Newton's-third-law test
+checks that the vector sum of internal forces is zero. Together these tests
+catch both a wrong derivative and a wrong force direction before integration.
+
+For the equilibrium trajectory, run:
+
+```bash
+cd week2
+make reproduce
+cargo run --manifest-path md/Cargo.toml --release -- check artifacts
+```
+
+The independent checker reconstructs every saved frame and rejects inconsistent
+stored energies. The verified cell-list run reported secular drift
+`5.037243e-5`, speed temperature `0.483895`, and `chi2/dof = 1.449673`, followed
+by `PASS`. In two dimensions the equilibrium speed follows the Rayleigh form of
+the Maxwell-Boltzmann law; the fitted temperature and near-one chi-square show
+that the full speed distribution, not only its mean, agrees within sampling
+noise.
+
+The corresponding animation is `fluid.mp4`.
+
+## Heating and GitHub Pages
+
+The published viewer is:
+
+<https://boyuan-ge.github.io/AMAT5315-2026Fall-Exercise/>
+
+The final evidence is reproduced from the repository root with:
+
+```bash
+md run --n 400 --temperature 0.2 --ramp-to 1.2 \
+  --steps 20000 --sample-every 100 --out docs
+md run --temperature 0.2 --out /tmp/amat5315-week2-cold
+md video /tmp/amat5315-week2-cold --out week2/cold.mp4
+md run --temperature 1.0 --out /tmp/amat5315-week2-hot
+md video /tmp/amat5315-week2-hot --out week2/hot.mp4
+```
+
+The page loads 400 atoms and 200 frames. Across the first and last ten-frame
+windows, measured long-range `g(r)` contrast falls from `0.334` to `0.100` as
+temperature rises from about 0.2 toward 1.2. The cold animation retains sharp
+distant neighbour-shell peaks, while the hot animation shows neighbour exchange
+and `g(r)` flattening beyond the first peak—evidence that the ordered lattice
+has melted.
