@@ -104,3 +104,34 @@ fn run_rejects_unsupported_particle_grid() {
         .unwrap();
     assert!(!status.success());
 }
+
+#[test]
+fn default_run_passes_independent_physics_checks() {
+    let temporary = tempdir().unwrap();
+    let run = md_command()
+        .args(["run", "--out"])
+        .arg(temporary.path())
+        .output()
+        .unwrap();
+    assert!(
+        run.status.success(),
+        "{}",
+        String::from_utf8_lossy(&run.stderr)
+    );
+
+    let check = md_command()
+        .arg("check")
+        .arg(temporary.path())
+        .output()
+        .unwrap();
+    assert!(
+        check.status.success(),
+        "{}",
+        String::from_utf8_lossy(&check.stderr)
+    );
+    let stdout = String::from_utf8_lossy(&check.stdout);
+    assert!(stdout.contains("secular drift"));
+    assert!(stdout.contains("T_speed"));
+    assert!(stdout.contains("chi2/dof"));
+    assert!(stdout.contains("PASS"));
+}

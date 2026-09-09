@@ -24,9 +24,10 @@ pub fn greeting() -> &'static str {
 #[cfg(test)]
 mod tests {
     use super::{
-        Boundary, Euler, ForceMethod, PairModel, System, VelocityVerlet, evaluate_forces, greeting,
-        kinetic_temperature, lj_energy, lj_force, minimum_image, seeded_velocities, shifted_energy,
-        simulate_steps, triangular_lattice,
+        Boundary, Euler, ForceMethod, Frame, PairModel, RunMetadata, System, TrajectoryWriter,
+        VelocityVerlet, check_trajectory, evaluate_forces, greeting, kinetic_temperature, lj_energy,
+        lj_force, minimum_image, seeded_velocities, shifted_energy, simulate_steps, speed_bin,
+        triangular_lattice,
     };
 
     #[test]
@@ -113,5 +114,46 @@ mod tests {
         assert!((mean[0] / 100.0).abs() < 1.0e-12);
         assert!((mean[1] / 100.0).abs() < 1.0e-12);
         assert!((kinetic_temperature(&first) - 0.5).abs() < 1.0e-12);
+    }
+
+    #[test]
+    fn maxwell_boltzmann_bins_use_equal_probability_edges() {
+        assert_eq!(speed_bin(0.0, 0.5), 0);
+        assert_eq!(speed_bin(0.6, 0.5), 7);
+        assert_eq!(speed_bin(2.0, 0.5), 23);
+    }
+
+    #[test]
+    fn checker_rejects_a_corrupted_stored_energy() {
+        let temporary = tempfile::tempdir().unwrap();
+        let metadata = RunMetadata {
+            n: 2,
+            rho: 0.08,
+            box_size: [5.0, 5.0],
+            dt: 0.01,
+            temperature: 0.5,
+            eq_steps: 0,
+            steps: 1,
+            sample_every: 1,
+            seed: 2026,
+            integrator: "velocity-verlet".to_string(),
+            force: "naive".to_string(),
+            ramp_to: None,
+        };
+        let mut writer = TrajectoryWriter::create(temporary.path(), &metadata).unwrap();
+        writer
+            .write_frame(&Frame {
+                step: 1,
+                t: 0.01,
+                pos: vec![[0.0, 0.0], [1.2, 0.0]],
+                vel: vec![[-0.5, 0.0], [0.5, 0.0]],
+                e_pot: 999.0,
+                e_kin: 0.25,
+            })
+            .unwrap();
+        writer.finish().unwrap();
+
+        let error = check_trajectory(temporary.path()).unwrap_err();
+        assert!(error.to_string().contains("stored energy"));
     }
 }
