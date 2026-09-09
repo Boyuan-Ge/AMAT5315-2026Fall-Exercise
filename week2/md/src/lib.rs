@@ -10,8 +10,9 @@ pub fn lj_energy(r: f64) -> f64 {
 }
 
 /// Radial Lennard-Jones force in reduced units.
-pub fn lj_force(_r: f64) -> f64 {
-    todo!("implemented after the energy function")
+pub fn lj_force(r: f64) -> f64 {
+    let inv_r6 = r.powi(-6);
+    24.0 / r * (2.0 * inv_r6 * inv_r6 - inv_r6)
 }
 
 #[cfg(test)]
