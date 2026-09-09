@@ -36,12 +36,15 @@ fn run_writes_readable_contract_files() {
         .arg(temporary.path())
         .output()
         .unwrap();
-    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
 
-    let metadata: Value = serde_json::from_str(
-        &fs::read_to_string(temporary.path().join("run.json")).unwrap(),
-    )
-    .unwrap();
+    let metadata: Value =
+        serde_json::from_str(&fs::read_to_string(temporary.path().join("run.json")).unwrap())
+            .unwrap();
     assert_eq!(metadata["n"], 4);
     assert_eq!(metadata["rho"], 0.8);
     assert_eq!(metadata["dt"], 0.01);

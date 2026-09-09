@@ -1,9 +1,12 @@
+mod cli;
 mod force;
 mod initialise;
 mod integrator;
 mod potential;
 mod system;
+mod trajectory;
 
+pub use cli::{RunOptions, run_cli, run_to_dir};
 pub use force::{ForceMethod, evaluate_forces, minimum_image};
 pub use initialise::{
     kinetic_temperature, rescale_temperature, seeded_velocities, triangular_lattice,
@@ -11,6 +14,7 @@ pub use initialise::{
 pub use integrator::{EnergyTrace, Euler, Integrator, VelocityVerlet, simulate_steps};
 pub use potential::{lj_energy, lj_force, shifted_energy};
 pub use system::{Boundary, PairModel, System};
+pub use trajectory::{Frame, RunMetadata, TrajectoryWriter};
 
 /// Return the greeting printed by the `md` executable.
 pub fn greeting() -> &'static str {
