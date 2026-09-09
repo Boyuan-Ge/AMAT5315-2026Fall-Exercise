@@ -1,3 +1,9 @@
+mod integrator;
+mod system;
+
+pub use integrator::{EnergyTrace, Euler, Integrator, VelocityVerlet, simulate_steps};
+pub use system::{Boundary, PairModel, System};
+
 /// Return the greeting printed by the `md` executable.
 pub fn greeting() -> &'static str {
     "Hello, world!"
@@ -17,9 +23,7 @@ pub fn lj_force(r: f64) -> f64 {
 
 #[cfg(test)]
 mod tests {
-    use super::{
-        greeting, lj_energy, lj_force, simulate_steps, Euler, System, VelocityVerlet,
-    };
+    use super::{Euler, System, VelocityVerlet, greeting, lj_energy, lj_force, simulate_steps};
 
     #[test]
     fn greeting_is_hello_world() {
