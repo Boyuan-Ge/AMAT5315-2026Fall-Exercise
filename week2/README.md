@@ -160,6 +160,10 @@ The published viewer is:
 
 <https://boyuan-ge.github.io/AMAT5315-2026Fall-Exercise/>
 
+The under-two-minute screen recording is published in the
+[Week 2 Molecular Dynamics release](https://github.com/Boyuan-Ge/AMAT5315-2026Fall-Exercise/releases/tag/week2-submission),
+with the [MP4 available directly](https://github.com/Boyuan-Ge/AMAT5315-2026Fall-Exercise/releases/download/week2-submission/week2-screen-recording.mp4).
+
 The final evidence is reproduced from the repository root with:
 
 ```bash
