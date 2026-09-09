@@ -31,7 +31,8 @@ mod tests {
         Boundary, Euler, ForceMethod, Frame, PairModel, RunMetadata, System, TrajectoryWriter,
         VelocityVerlet, cell_candidate_pairs, check_trajectory, evaluate_forces, greeting,
         kinetic_temperature, lj_energy, lj_force, minimum_image, radial_distribution,
-        seeded_velocities, shifted_energy, simulate_steps, speed_bin, triangular_lattice,
+        ramp_temperature, seeded_velocities, shifted_energy, simulate_steps, speed_bin,
+        triangular_lattice,
     };
 
     #[test]
@@ -236,5 +237,12 @@ mod tests {
         assert_eq!(pairs.len(), unique.len());
         assert_eq!(pairs.len(), 6);
         assert_force_methods_match(system);
+    }
+
+    #[test]
+    fn heating_schedule_is_linear_and_reaches_both_endpoints() {
+        assert!((ramp_temperature(0.2, 1.2, 0, 100) - 0.2).abs() < 1.0e-12);
+        assert!((ramp_temperature(0.2, 1.2, 50, 100) - 0.7).abs() < 1.0e-12);
+        assert!((ramp_temperature(0.2, 1.2, 100, 100) - 1.2).abs() < 1.0e-12);
     }
 }

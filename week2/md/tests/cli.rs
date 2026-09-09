@@ -115,6 +115,62 @@ fn run_defaults_to_cell_list_forces() {
 }
 
 #[test]
+fn run_records_and_applies_linear_heating_ramp() {
+    let temporary = tempdir().unwrap();
+    let output = md_command()
+        .args([
+            "run",
+            "--n",
+            "4",
+            "--temperature",
+            "0.2",
+            "--ramp-to",
+            "1.2",
+            "--eq-steps",
+            "0",
+            "--steps",
+            "100",
+            "--sample-every",
+            "50",
+            "--out",
+        ])
+        .arg(temporary.path())
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let metadata: Value = serde_json::from_str(
+        &fs::read_to_string(temporary.path().join("run.json")).unwrap(),
+    )
+    .unwrap();
+    assert_eq!(metadata["ramp_to"], 1.2);
+
+    let trajectory = fs::read_to_string(temporary.path().join("traj.jsonl")).unwrap();
+    let frames: Vec<Value> = trajectory
+        .lines()
+        .map(|line| serde_json::from_str(line).unwrap())
+        .collect();
+    assert_eq!(frames.len(), 2);
+    for (frame, target) in frames.iter().zip([0.7, 1.2]) {
+        let twice_kinetic: f64 = frame["vel"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|velocity| {
+                let velocity = velocity.as_array().unwrap();
+                velocity[0].as_f64().unwrap().powi(2)
+                    + velocity[1].as_f64().unwrap().powi(2)
+            })
+            .sum();
+        let thermostat_temperature = twice_kinetic / 6.0;
+        assert!((thermostat_temperature - target).abs() < 1.0e-10);
+    }
+}
+
+#[test]
 fn run_rejects_zero_sample_interval() {
     let temporary = tempdir().unwrap();
     let status = md_command()
