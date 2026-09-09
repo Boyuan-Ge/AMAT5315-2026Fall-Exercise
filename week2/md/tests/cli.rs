@@ -85,6 +85,37 @@ fn run_writes_readable_contract_files() {
 }
 
 #[test]
+fn run_defaults_to_cell_list_forces() {
+    let temporary = tempdir().unwrap();
+    let output = md_command()
+        .args([
+            "run",
+            "--n",
+            "4",
+            "--eq-steps",
+            "0",
+            "--steps",
+            "1",
+            "--sample-every",
+            "1",
+            "--out",
+        ])
+        .arg(temporary.path())
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let metadata: Value = serde_json::from_str(
+        &fs::read_to_string(temporary.path().join("run.json")).unwrap(),
+    )
+    .unwrap();
+    assert_eq!(metadata["force"], "cells");
+}
+
+#[test]
 fn run_rejects_zero_sample_interval() {
     let temporary = tempdir().unwrap();
     let status = md_command()
