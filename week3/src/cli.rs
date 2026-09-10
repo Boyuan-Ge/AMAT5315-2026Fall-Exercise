@@ -47,32 +47,34 @@ pub enum Command {
     },
     /// Sweep lattice sizes and temperatures into the course artifact format.
     Sweep {
-        #[arg(long, value_delimiter = ',', default_value = "32,64")]
-        sizes: Vec<usize>,
-        #[arg(long, default_value_t = 1.5)]
-        t_start: f64,
-        #[arg(long, default_value_t = 3.5)]
-        t_end: f64,
-        #[arg(long, default_value_t = 0.1)]
-        t_step: f64,
-        #[arg(long, default_value_t = 2.0)]
-        critical_start: f64,
-        #[arg(long, default_value_t = 2.6)]
-        critical_end: f64,
-        #[arg(long, default_value_t = 0.05)]
-        critical_step: f64,
-        #[arg(long, default_value_t = 2_000)]
-        eq_sweeps: usize,
-        #[arg(long, default_value_t = 5_000)]
-        meas_sweeps: usize,
-        #[arg(long, default_value_t = 100_000)]
-        meas_sweeps_critical: usize,
-        #[arg(long, default_value_t = 1)]
-        sample_every: usize,
-        #[arg(long, default_value_t = 42)]
-        seed: u64,
-        #[arg(long, default_value = "artifacts")]
-        output: PathBuf,
+        #[arg(long)]
+        wolff: bool,
+        #[arg(long, value_delimiter = ',')]
+        sizes: Option<Vec<usize>>,
+        #[arg(long)]
+        t_start: Option<f64>,
+        #[arg(long)]
+        t_end: Option<f64>,
+        #[arg(long)]
+        t_step: Option<f64>,
+        #[arg(long)]
+        critical_start: Option<f64>,
+        #[arg(long)]
+        critical_end: Option<f64>,
+        #[arg(long)]
+        critical_step: Option<f64>,
+        #[arg(long)]
+        eq_sweeps: Option<usize>,
+        #[arg(long)]
+        meas_sweeps: Option<usize>,
+        #[arg(long)]
+        meas_sweeps_critical: Option<usize>,
+        #[arg(long)]
+        sample_every: Option<usize>,
+        #[arg(long)]
+        seed: Option<u64>,
+        #[arg(long)]
+        output: Option<PathBuf>,
     },
     /// Analyze a saved run with correlation-aware error bars.
     Analyze {

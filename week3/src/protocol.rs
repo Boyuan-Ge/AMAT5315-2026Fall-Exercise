@@ -11,6 +11,7 @@ use crate::{
     artifacts::{Algorithm, Frame, RunMetadata, SeriesRow, SeriesWriter, write_run_metadata},
     lattice::Lattice,
     metropolis::{AcceptanceTable, metropolis_sweep},
+    wolff::WolffUpdater,
 };
 
 #[derive(Clone, Debug)]
@@ -97,6 +98,25 @@ impl SweepConfig {
             seed: 7,
             output,
             algorithm: Algorithm::Metropolis,
+        }
+    }
+
+    pub fn wolff_default() -> Self {
+        Self {
+            sizes: vec![32, 64],
+            t_start: 2.0,
+            t_end: 2.6,
+            t_step: 0.05,
+            critical_start: 2.0,
+            critical_end: 2.6,
+            critical_step: 0.05,
+            eq_sweeps: 2_000,
+            meas_sweeps: 100_000,
+            meas_sweeps_critical: 100_000,
+            sample_every: 1,
+            seed: 42,
+            output: PathBuf::from("artifacts-wolff"),
+            algorithm: Algorithm::Wolff,
         }
     }
 
@@ -257,6 +277,10 @@ pub fn contract_temperature_grid() -> Vec<f64> {
         .expect("the fixed contract grid is valid")
 }
 
+pub fn wolff_temperature_grid() -> Vec<f64> {
+    temperature_grid(2.0, 2.6, 0.05).expect("the fixed Wolff grid is valid")
+}
+
 pub fn refined_temperature_grid(
     start: f64,
     end: f64,
@@ -299,11 +323,23 @@ pub fn run_sweep(config: &SweepConfig) -> Result<()> {
         let seed = config.seed + 1_000 * (config.sizes.len() - size_index - 1) as u64;
         let mut rng = StdRng::seed_from_u64(seed);
         let mut lattice = Lattice::all_up(l)?;
+        let mut wolff = WolffUpdater::new(lattice.len());
 
         for &temperature in &temperatures {
-            let table = AcceptanceTable::new(temperature)?;
+            let table = if config.algorithm == Algorithm::Metropolis {
+                Some(AcceptanceTable::new(temperature)?)
+            } else {
+                None
+            };
             for _ in 0..config.eq_sweeps {
-                metropolis_sweep(&mut lattice, &table, &mut rng);
+                update_once(
+                    config.algorithm,
+                    &mut lattice,
+                    table.as_ref(),
+                    &mut wolff,
+                    temperature,
+                    &mut rng,
+                )?;
             }
 
             let measurement_count = if temperature >= config.critical_start - 1e-10
@@ -314,7 +350,14 @@ pub fn run_sweep(config: &SweepConfig) -> Result<()> {
                 config.meas_sweeps
             };
             for sweep in 1..=measurement_count {
-                metropolis_sweep(&mut lattice, &table, &mut rng);
+                update_once(
+                    config.algorithm,
+                    &mut lattice,
+                    table.as_ref(),
+                    &mut wolff,
+                    temperature,
+                    &mut rng,
+                )?;
                 if sweep.is_multiple_of(config.sample_every) {
                     writer.write(&SeriesRow {
                         l,
@@ -328,6 +371,26 @@ pub fn run_sweep(config: &SweepConfig) -> Result<()> {
         }
     }
     writer.finish()
+}
+
+fn update_once(
+    algorithm: Algorithm,
+    lattice: &mut Lattice,
+    table: Option<&AcceptanceTable>,
+    wolff: &mut WolffUpdater,
+    temperature: f64,
+    rng: &mut StdRng,
+) -> Result<()> {
+    match algorithm {
+        Algorithm::Metropolis => {
+            let table = table.ok_or_else(|| anyhow::anyhow!("missing Metropolis table"))?;
+            metropolis_sweep(lattice, table, rng);
+        }
+        Algorithm::Wolff => {
+            wolff.sweep(lattice, temperature, rng)?;
+        }
+    }
+    Ok(())
 }
 
 fn validate_relax(config: &RelaxConfig) -> Result<()> {

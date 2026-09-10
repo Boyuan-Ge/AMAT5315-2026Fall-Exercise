@@ -5,3 +5,4 @@ pub mod lattice;
 pub mod metropolis;
 pub mod plot;
 pub mod protocol;
+pub mod wolff;

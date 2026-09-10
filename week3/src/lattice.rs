@@ -73,17 +73,25 @@ impl Lattice {
     }
 
     pub fn neighbour_sum(&self, index: usize) -> i32 {
+        self.neighbours(index)
+            .into_iter()
+            .map(|neighbour| i32::from(self.spins[neighbour]))
+            .sum()
+    }
+
+    pub fn neighbours(&self, index: usize) -> [usize; 4] {
         let row = index / self.l;
         let column = index % self.l;
         let up = (row + self.l - 1) % self.l;
         let down = (row + 1) % self.l;
         let left = (column + self.l - 1) % self.l;
         let right = (column + 1) % self.l;
-
-        i32::from(self.spins[up * self.l + column])
-            + i32::from(self.spins[down * self.l + column])
-            + i32::from(self.spins[row * self.l + left])
-            + i32::from(self.spins[row * self.l + right])
+        [
+            up * self.l + column,
+            down * self.l + column,
+            row * self.l + left,
+            row * self.l + right,
+        ]
     }
 
     pub fn delta_energy(&self, index: usize) -> i32 {

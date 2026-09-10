@@ -22,6 +22,7 @@ pub struct Frame {
 #[serde(rename_all = "lowercase")]
 pub enum Algorithm {
     Metropolis,
+    Wolff,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
