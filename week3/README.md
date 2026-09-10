@@ -99,8 +99,8 @@ The byte-reproducible Metropolis series has SHA-256:
 ## Code evidence
 
 - Local flip energy: `src/lattice.rs:97`.
-- Seeded generators: `src/protocol.rs:153`, `src/protocol.rs:243`, and `src/protocol.rs:324`.
-- Metropolis/Wolff update selection: `src/protocol.rs:384`.
+- Seeded generators: `src/protocol.rs:173`, `src/protocol.rs:263`, and `src/protocol.rs:344`.
+- Metropolis/Wolff update selection: `src/protocol.rs:404`.
 - The two-update comparison chart is `tau-compare.png`; regenerate it with `make compare`.
 
 ## Pages

@@ -47,3 +47,16 @@ fn tiny_sweep_writes_exact_metadata_and_series_fields() {
     assert!(first_line.contains("\"M\":"));
     assert!(first_line.contains("\"E\":"));
 }
+
+#[test]
+fn per_size_seeds_are_tunable_while_defaults_match_the_protocol() {
+    let defaults = SweepConfig::metropolis_default();
+    assert_eq!(defaults.resolved_seeds().unwrap(), vec![1042, 42]);
+
+    let mut custom = defaults;
+    custom.seeds = Some(vec![7, 9]);
+    assert_eq!(custom.resolved_seeds().unwrap(), vec![7, 9]);
+
+    custom.seeds = Some(vec![7]);
+    assert!(custom.resolved_seeds().is_err());
+}

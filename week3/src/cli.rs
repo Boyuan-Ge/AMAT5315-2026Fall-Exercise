@@ -73,6 +73,8 @@ pub enum Command {
         sample_every: Option<usize>,
         #[arg(long)]
         seed: Option<u64>,
+        #[arg(long, value_delimiter = ',')]
+        seeds: Option<Vec<u64>>,
         #[arg(long)]
         output: Option<PathBuf>,
     },

@@ -63,6 +63,7 @@ fn main() -> Result<()> {
             meas_sweeps_critical,
             sample_every,
             seed,
+            seeds,
             output,
         } => {
             let mut config = if wolff {
@@ -105,6 +106,9 @@ fn main() -> Result<()> {
             }
             if let Some(value) = seed {
                 config.seed = value;
+            }
+            if let Some(value) = seeds {
+                config.seeds = Some(value);
             }
             if let Some(value) = output {
                 config.output = value;

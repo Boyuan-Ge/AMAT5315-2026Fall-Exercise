@@ -58,6 +58,7 @@ pub struct SweepConfig {
     pub meas_sweeps_critical: usize,
     pub sample_every: usize,
     pub seed: u64,
+    pub seeds: Option<Vec<u64>>,
     pub output: PathBuf,
     pub algorithm: Algorithm,
 }
@@ -77,6 +78,7 @@ impl SweepConfig {
             meas_sweeps_critical: 100_000,
             sample_every: 1,
             seed: 42,
+            seeds: None,
             output: PathBuf::from("artifacts"),
             algorithm: Algorithm::Metropolis,
         }
@@ -96,6 +98,7 @@ impl SweepConfig {
             meas_sweeps_critical: 5,
             sample_every: 1,
             seed: 7,
+            seeds: None,
             output,
             algorithm: Algorithm::Metropolis,
         }
@@ -115,6 +118,7 @@ impl SweepConfig {
             meas_sweeps_critical: 100_000,
             sample_every: 1,
             seed: 42,
+            seeds: None,
             output: PathBuf::from("artifacts-wolff"),
             algorithm: Algorithm::Wolff,
         }
@@ -129,6 +133,22 @@ impl SweepConfig {
             self.critical_end,
             self.critical_step,
         )
+    }
+
+    pub fn resolved_seeds(&self) -> Result<Vec<u64>> {
+        if let Some(seeds) = &self.seeds {
+            if seeds.len() != self.sizes.len() {
+                bail!(
+                    "--seeds contains {} values but --sizes contains {}",
+                    seeds.len(),
+                    self.sizes.len()
+                );
+            }
+            return Ok(seeds.clone());
+        }
+        Ok((0..self.sizes.len())
+            .map(|index| self.seed + 1_000 * (self.sizes.len() - index - 1) as u64)
+            .collect())
     }
 }
 
@@ -303,6 +323,7 @@ pub fn refined_temperature_grid(
 pub fn run_sweep(config: &SweepConfig) -> Result<()> {
     validate_sweep(config)?;
     let temperatures = config.temperatures()?;
+    let seeds = config.resolved_seeds()?;
     fs::create_dir_all(&config.output)
         .with_context(|| format!("failed to create {}", config.output.display()))?;
 
@@ -319,8 +340,7 @@ pub fn run_sweep(config: &SweepConfig) -> Result<()> {
     write_run_metadata(&config.output.join("run.json"), &metadata)?;
     let mut writer = SeriesWriter::create(&config.output.join("series.jsonl"))?;
 
-    for (size_index, &l) in config.sizes.iter().enumerate() {
-        let seed = config.seed + 1_000 * (config.sizes.len() - size_index - 1) as u64;
+    for (&l, &seed) in config.sizes.iter().zip(&seeds) {
         let mut rng = StdRng::seed_from_u64(seed);
         let mut lattice = Lattice::all_up(l)?;
         let mut wolff = WolffUpdater::new(lattice.len());
