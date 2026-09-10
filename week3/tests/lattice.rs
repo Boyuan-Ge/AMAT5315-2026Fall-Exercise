@@ -13,9 +13,7 @@ fn total_energy_counts_each_periodic_bond_once() {
 
     let checkerboard = Lattice::from_spins(
         4,
-        vec![
-            1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, -1, -1, 1, -1, 1,
-        ],
+        vec![1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, -1, -1, 1, -1, 1],
     )
     .unwrap();
     assert_eq!(checkerboard.total_energy(), 32);
