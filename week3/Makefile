@@ -1,4 +1,4 @@
-.PHONY: reproduce wolff analyze
+.PHONY: reproduce wolff analyze compare
 
 ARTIFACTS ?= artifacts
 ARTIFACTS_WOLFF ?= artifacts-wolff
@@ -20,3 +20,6 @@ wolff:
 
 analyze:
 	cargo run --quiet --release -- analyze "$(ARTIFACTS)" --blocks $(BLOCKS)
+
+compare:
+	cargo run --quiet --release -- compare-tau "$(ARTIFACTS)" "$(ARTIFACTS_WOLFF)" --l 64 --output tau-compare.png --blocks $(BLOCKS)

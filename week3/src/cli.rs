@@ -88,4 +88,15 @@ pub enum Command {
         #[arg(long, default_value_t = 50)]
         blocks: usize,
     },
+    /// Compare Metropolis and Wolff autocorrelation times on one chart.
+    CompareTau {
+        metropolis: PathBuf,
+        wolff: PathBuf,
+        #[arg(long, default_value_t = 64)]
+        l: usize,
+        #[arg(long, default_value = "tau-compare.png")]
+        output: PathBuf,
+        #[arg(long, default_value_t = 50)]
+        blocks: usize,
+    },
 }

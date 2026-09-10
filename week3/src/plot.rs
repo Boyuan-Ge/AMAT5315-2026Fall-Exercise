@@ -145,6 +145,101 @@ pub fn plot_tau(analysis: &RunAnalysis, output: &std::path::Path) -> Result<()> 
     root.present().map_err(plot_error)
 }
 
+pub fn plot_tau_comparison(
+    metropolis: &RunAnalysis,
+    wolff: &RunAnalysis,
+    l: usize,
+    output: &std::path::Path,
+) -> Result<()> {
+    let metropolis_points: Vec<_> = metropolis
+        .groups
+        .iter()
+        .filter(|group| group.l == l)
+        .map(|group| (group.t, group.tau_int))
+        .collect();
+    let wolff_points: Vec<_> = wolff
+        .groups
+        .iter()
+        .filter(|group| group.l == l)
+        .map(|group| (group.t, group.tau_int))
+        .collect();
+    if metropolis_points.is_empty() || wolff_points.is_empty() {
+        return Err(anyhow!("both runs must contain L={l}"));
+    }
+    let x_min = wolff_points
+        .iter()
+        .map(|point| point.0)
+        .fold(f64::INFINITY, f64::min);
+    let x_max = wolff_points
+        .iter()
+        .map(|point| point.0)
+        .fold(f64::NEG_INFINITY, f64::max);
+    let metropolis_points: Vec<_> = metropolis_points
+        .into_iter()
+        .filter(|(t, _)| *t >= x_min && *t <= x_max)
+        .collect();
+    let y_max = metropolis_points
+        .iter()
+        .chain(&wolff_points)
+        .map(|point| point.1)
+        .fold(1.0_f64, f64::max)
+        * 1.5;
+
+    let root = BitMapBackend::new(output, IMAGE_SIZE).into_drawing_area();
+    root.fill(&WHITE).map_err(plot_error)?;
+    let mut chart = ChartBuilder::on(&root)
+        .caption(
+            format!("Critical slowing down at L = {l}"),
+            ("sans-serif", 42),
+        )
+        .margin(28)
+        .x_label_area_size(55)
+        .y_label_area_size(85)
+        .build_cartesian_2d(x_min..x_max, (0.4..y_max).log_scale())
+        .map_err(plot_error)?;
+    chart
+        .configure_mesh()
+        .x_desc("temperature T")
+        .y_desc("tau_int (sweeps)")
+        .draw()
+        .map_err(plot_error)?;
+    chart
+        .draw_series(LineSeries::new(
+            metropolis_points.clone(),
+            RED.stroke_width(3),
+        ))
+        .map_err(plot_error)?
+        .label("single-flip Metropolis")
+        .legend(|(x, y)| PathElement::new(vec![(x, y), (x + 24, y)], RED.stroke_width(3)));
+    chart
+        .draw_series(
+            metropolis_points
+                .into_iter()
+                .map(|point| Circle::new(point, 4, RED.filled())),
+        )
+        .map_err(plot_error)?;
+    chart
+        .draw_series(LineSeries::new(wolff_points.clone(), BLUE.stroke_width(3)))
+        .map_err(plot_error)?
+        .label("Wolff clusters")
+        .legend(|(x, y)| PathElement::new(vec![(x, y), (x + 24, y)], BLUE.stroke_width(3)));
+    chart
+        .draw_series(
+            wolff_points
+                .into_iter()
+                .map(|point| Circle::new(point, 4, BLUE.filled())),
+        )
+        .map_err(plot_error)?;
+    draw_tc_marker(&mut chart, 0.4, y_max)?;
+    chart
+        .configure_series_labels()
+        .background_style(WHITE.mix(0.85))
+        .border_style(BLACK)
+        .draw()
+        .map_err(plot_error)?;
+    root.present().map_err(plot_error)
+}
+
 fn draw_group_lines<Y: Ranged<ValueType = f64>>(
     chart: &mut ChartContext<'_, BitMapBackend<'_>, Cartesian2d<RangedCoordf64, Y>>,
     analysis: &RunAnalysis,

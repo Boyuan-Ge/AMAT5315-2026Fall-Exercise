@@ -3,7 +3,7 @@ use clap::Parser;
 use ising::{
     analysis::{analyze_folder, render_analysis},
     cli::{Cli, Command},
-    plot::plot_saved_run,
+    plot::{plot_saved_run, plot_tau_comparison},
     protocol::{
         RelaxConfig, SnapshotConfig, SweepConfig, render_relax, run_relax, run_snapshots, run_sweep,
     },
@@ -119,6 +119,18 @@ fn main() -> Result<()> {
             for path in plot_saved_run(&folder, blocks)? {
                 println!("wrote {}", path.display());
             }
+        }
+        Command::CompareTau {
+            metropolis,
+            wolff,
+            l,
+            output,
+            blocks,
+        } => {
+            let metropolis = analyze_folder(&metropolis, blocks)?;
+            let wolff = analyze_folder(&wolff, blocks)?;
+            plot_tau_comparison(&metropolis, &wolff, l, &output)?;
+            println!("wrote {}", output.display());
         }
     }
     Ok(())
