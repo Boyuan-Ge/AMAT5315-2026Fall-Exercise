@@ -37,4 +37,14 @@ The remaining `panic!`/`expect` sites are limited to impossible states produced 
 - Wolff at `L=64,T=2.3`: error ratio `1.45`, `tau_int=0.86`.
 - All five generated charts were visually inspected for labels, clipping, axis scaling, and expected curve ordering.
 
-Fresh-clone and public GitHub Pages verification are recorded after the branch is integrated and pushed.
+## Verification after local integration
+
+- The feature branch was fast-forwarded into local `main` at `eb5c564`.
+- A clean, non-local clone of that commit passed all 22 release-mode tests.
+- `make reproduce` regenerated 410 spin frames and exactly 2,740,000 Metropolis rows.
+- The regenerated Metropolis SHA-256 was `8b05e4b1678d63f7460764016f9767839871a4fdbd7f5811291c4557094a6f08`, identical to the earlier full runs.
+- `make wolff` regenerated exactly 2,600,000 Wolff rows with SHA-256 `9689c3e256a1f3a29a0e5ef4081273403d5d5e92643491e62d8a81f2149adf85`.
+- `make compare` regenerated a byte-identical `tau-compare.png`.
+- The tracked public viewer contains the same 410-frame `spins.jsonl` as the clean reproduction.
+
+Public GitHub Pages verification remains pending until the user approves the upload.
