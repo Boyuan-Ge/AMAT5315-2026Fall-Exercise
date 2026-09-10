@@ -2,7 +2,7 @@ use anyhow::Result;
 use clap::Parser;
 use ising::{
     cli::{Cli, Command},
-    protocol::{RelaxConfig, render_relax, run_relax},
+    protocol::{RelaxConfig, SnapshotConfig, render_relax, run_relax, run_snapshots},
 };
 
 fn main() -> Result<()> {
@@ -24,6 +24,27 @@ fn main() -> Result<()> {
             })?;
             print!("{}", render_relax(&result));
         }
+        Command::Snapshots {
+            l,
+            t_start,
+            t_end,
+            t_step,
+            eq_sweeps,
+            record_sweeps,
+            frame_every,
+            seed,
+            output,
+        } => run_snapshots(&SnapshotConfig {
+            l,
+            t_start,
+            t_end,
+            t_step,
+            eq_sweeps,
+            record_sweeps,
+            frame_every,
+            seed,
+            output,
+        })?,
     }
     Ok(())
 }
