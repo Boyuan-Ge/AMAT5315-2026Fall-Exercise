@@ -8,7 +8,7 @@ use anyhow::{Context, Result, bail};
 use rand::{SeedableRng, rngs::StdRng};
 
 use crate::{
-    artifacts::Frame,
+    artifacts::{Algorithm, Frame, RunMetadata, SeriesRow, SeriesWriter, write_run_metadata},
     lattice::Lattice,
     metropolis::{AcceptanceTable, metropolis_sweep},
 };
@@ -41,6 +41,75 @@ pub struct SnapshotConfig {
     pub frame_every: usize,
     pub seed: u64,
     pub output: PathBuf,
+}
+
+#[derive(Clone, Debug)]
+pub struct SweepConfig {
+    pub sizes: Vec<usize>,
+    pub t_start: f64,
+    pub t_end: f64,
+    pub t_step: f64,
+    pub critical_start: f64,
+    pub critical_end: f64,
+    pub critical_step: f64,
+    pub eq_sweeps: usize,
+    pub meas_sweeps: usize,
+    pub meas_sweeps_critical: usize,
+    pub sample_every: usize,
+    pub seed: u64,
+    pub output: PathBuf,
+    pub algorithm: Algorithm,
+}
+
+impl SweepConfig {
+    pub fn metropolis_default() -> Self {
+        Self {
+            sizes: vec![32, 64],
+            t_start: 1.5,
+            t_end: 3.5,
+            t_step: 0.1,
+            critical_start: 2.0,
+            critical_end: 2.6,
+            critical_step: 0.05,
+            eq_sweeps: 2_000,
+            meas_sweeps: 5_000,
+            meas_sweeps_critical: 100_000,
+            sample_every: 1,
+            seed: 42,
+            output: PathBuf::from("artifacts"),
+            algorithm: Algorithm::Metropolis,
+        }
+    }
+
+    pub fn tiny_test(output: PathBuf) -> Self {
+        Self {
+            sizes: vec![8],
+            t_start: 1.5,
+            t_end: 1.6,
+            t_step: 0.1,
+            critical_start: 9.0,
+            critical_end: 10.0,
+            critical_step: 0.05,
+            eq_sweeps: 2,
+            meas_sweeps: 5,
+            meas_sweeps_critical: 5,
+            sample_every: 1,
+            seed: 7,
+            output,
+            algorithm: Algorithm::Metropolis,
+        }
+    }
+
+    pub fn temperatures(&self) -> Result<Vec<f64>> {
+        refined_temperature_grid(
+            self.t_start,
+            self.t_end,
+            self.t_step,
+            self.critical_start,
+            self.critical_end,
+            self.critical_step,
+        )
+    }
 }
 
 impl Default for SnapshotConfig {
@@ -183,6 +252,84 @@ pub fn run_snapshots(config: &SnapshotConfig) -> Result<()> {
     Ok(())
 }
 
+pub fn contract_temperature_grid() -> Vec<f64> {
+    refined_temperature_grid(1.5, 3.5, 0.1, 2.0, 2.6, 0.05)
+        .expect("the fixed contract grid is valid")
+}
+
+pub fn refined_temperature_grid(
+    start: f64,
+    end: f64,
+    coarse_step: f64,
+    critical_start: f64,
+    critical_end: f64,
+    critical_step: f64,
+) -> Result<Vec<f64>> {
+    let mut values = temperature_grid(start, end, coarse_step)?;
+    if critical_start <= end && critical_end >= start {
+        let refined_start = critical_start.max(start);
+        let refined_end = critical_end.min(end);
+        values.extend(temperature_grid(refined_start, refined_end, critical_step)?);
+    }
+    values.sort_by(f64::total_cmp);
+    values.dedup_by(|left, right| (*left - *right).abs() < 1e-10);
+    Ok(values)
+}
+
+pub fn run_sweep(config: &SweepConfig) -> Result<()> {
+    validate_sweep(config)?;
+    let temperatures = config.temperatures()?;
+    fs::create_dir_all(&config.output)
+        .with_context(|| format!("failed to create {}", config.output.display()))?;
+
+    let metadata = RunMetadata {
+        sizes: config.sizes.clone(),
+        t_grid: temperatures.clone(),
+        eq_sweeps: config.eq_sweeps,
+        meas_sweeps: config.meas_sweeps,
+        meas_sweeps_critical: config.meas_sweeps_critical,
+        sample_every: config.sample_every,
+        seed: config.seed,
+        algorithm: config.algorithm,
+    };
+    write_run_metadata(&config.output.join("run.json"), &metadata)?;
+    let mut writer = SeriesWriter::create(&config.output.join("series.jsonl"))?;
+
+    for (size_index, &l) in config.sizes.iter().enumerate() {
+        let seed = config.seed + 1_000 * (config.sizes.len() - size_index - 1) as u64;
+        let mut rng = StdRng::seed_from_u64(seed);
+        let mut lattice = Lattice::all_up(l)?;
+
+        for &temperature in &temperatures {
+            let table = AcceptanceTable::new(temperature)?;
+            for _ in 0..config.eq_sweeps {
+                metropolis_sweep(&mut lattice, &table, &mut rng);
+            }
+
+            let measurement_count = if temperature >= config.critical_start - 1e-10
+                && temperature <= config.critical_end + 1e-10
+            {
+                config.meas_sweeps_critical
+            } else {
+                config.meas_sweeps
+            };
+            for sweep in 1..=measurement_count {
+                metropolis_sweep(&mut lattice, &table, &mut rng);
+                if sweep.is_multiple_of(config.sample_every) {
+                    writer.write(&SeriesRow {
+                        l,
+                        t: temperature,
+                        sweep,
+                        m: lattice.magnetization(),
+                        e: lattice.energy_per_site(),
+                    })?;
+                }
+            }
+        }
+    }
+    writer.finish()
+}
+
 fn validate_relax(config: &RelaxConfig) -> Result<()> {
     if config.l < 2 {
         bail!("--l must be at least 2");
@@ -192,6 +339,25 @@ fn validate_relax(config: &RelaxConfig) -> Result<()> {
     }
     if config.measure == 0 {
         bail!("--measure must be greater than zero");
+    }
+    Ok(())
+}
+
+fn validate_sweep(config: &SweepConfig) -> Result<()> {
+    if config.sizes.is_empty() {
+        bail!("--sizes must contain at least one lattice size");
+    }
+    if config.sizes.iter().any(|&l| l < 2) {
+        bail!("every lattice size must be at least 2");
+    }
+    if config.sample_every == 0 {
+        bail!("--sample-every must be greater than zero");
+    }
+    if config.meas_sweeps == 0 || config.meas_sweeps_critical == 0 {
+        bail!("measurement sweep counts must be greater than zero");
+    }
+    if config.critical_end < config.critical_start {
+        bail!("critical window end must not be below its start");
     }
     Ok(())
 }

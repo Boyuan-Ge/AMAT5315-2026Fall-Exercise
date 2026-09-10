@@ -2,7 +2,9 @@ use anyhow::Result;
 use clap::Parser;
 use ising::{
     cli::{Cli, Command},
-    protocol::{RelaxConfig, SnapshotConfig, render_relax, run_relax, run_snapshots},
+    protocol::{
+        RelaxConfig, SnapshotConfig, SweepConfig, render_relax, run_relax, run_snapshots, run_sweep,
+    },
 };
 
 fn main() -> Result<()> {
@@ -44,6 +46,36 @@ fn main() -> Result<()> {
             frame_every,
             seed,
             output,
+        })?,
+        Command::Sweep {
+            sizes,
+            t_start,
+            t_end,
+            t_step,
+            critical_start,
+            critical_end,
+            critical_step,
+            eq_sweeps,
+            meas_sweeps,
+            meas_sweeps_critical,
+            sample_every,
+            seed,
+            output,
+        } => run_sweep(&SweepConfig {
+            sizes,
+            t_start,
+            t_end,
+            t_step,
+            critical_start,
+            critical_end,
+            critical_step,
+            eq_sweeps,
+            meas_sweeps,
+            meas_sweeps_critical,
+            sample_every,
+            seed,
+            output,
+            algorithm: ising::artifacts::Algorithm::Metropolis,
         })?,
     }
     Ok(())
