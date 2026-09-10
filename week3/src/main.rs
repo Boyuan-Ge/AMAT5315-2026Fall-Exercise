@@ -3,6 +3,7 @@ use clap::Parser;
 use ising::{
     analysis::{analyze_folder, render_analysis},
     cli::{Cli, Command},
+    plot::plot_saved_run,
     protocol::{
         RelaxConfig, SnapshotConfig, SweepConfig, render_relax, run_relax, run_snapshots, run_sweep,
     },
@@ -81,6 +82,11 @@ fn main() -> Result<()> {
         Command::Analyze { folder, blocks } => {
             let analysis = analyze_folder(&folder, blocks)?;
             print!("{}", render_analysis(&analysis));
+        }
+        Command::Plot { folder, blocks } => {
+            for path in plot_saved_run(&folder, blocks)? {
+                println!("wrote {}", path.display());
+            }
         }
     }
     Ok(())

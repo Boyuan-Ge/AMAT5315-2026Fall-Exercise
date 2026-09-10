@@ -80,4 +80,10 @@ pub enum Command {
         #[arg(long, default_value_t = 50)]
         blocks: usize,
     },
+    /// Draw magnetization, susceptibility, and autocorrelation charts.
+    Plot {
+        folder: PathBuf,
+        #[arg(long, default_value_t = 50)]
+        blocks: usize,
+    },
 }
