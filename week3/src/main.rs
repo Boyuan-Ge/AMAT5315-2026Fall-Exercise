@@ -1,6 +1,7 @@
 use anyhow::Result;
 use clap::Parser;
 use ising::{
+    analysis::{analyze_folder, render_analysis},
     cli::{Cli, Command},
     protocol::{
         RelaxConfig, SnapshotConfig, SweepConfig, render_relax, run_relax, run_snapshots, run_sweep,
@@ -77,6 +78,10 @@ fn main() -> Result<()> {
             output,
             algorithm: ising::artifacts::Algorithm::Metropolis,
         })?,
+        Command::Analyze { folder, blocks } => {
+            let analysis = analyze_folder(&folder, blocks)?;
+            print!("{}", render_analysis(&analysis));
+        }
     }
     Ok(())
 }

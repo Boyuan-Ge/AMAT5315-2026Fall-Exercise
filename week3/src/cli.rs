@@ -74,4 +74,10 @@ pub enum Command {
         #[arg(long, default_value = "artifacts")]
         output: PathBuf,
     },
+    /// Analyze a saved run with correlation-aware error bars.
+    Analyze {
+        folder: PathBuf,
+        #[arg(long, default_value_t = 50)]
+        blocks: usize,
+    },
 }
