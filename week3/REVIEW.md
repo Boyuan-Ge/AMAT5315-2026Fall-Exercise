@@ -47,4 +47,15 @@ The remaining `panic!`/`expect` sites are limited to impossible states produced 
 - `make compare` regenerated a byte-identical `tau-compare.png`.
 - The tracked public viewer contains the same 410-frame `spins.jsonl` as the clean reproduction.
 
-Public GitHub Pages verification remains pending until the user approves the upload.
+## Verification after GitHub publication
+
+- GitHub `main` and the local `main` both pointed to `33be063` before this record was added.
+- A new clone made from GitHub at that commit passed all 22 release-mode tests.
+- In that GitHub clone, `make reproduce` regenerated 410 frames and exactly 2,740,000 Metropolis rows with the expected SHA-256.
+- In that GitHub clone, `make wolff` regenerated exactly 2,600,000 Wolff rows with the expected SHA-256, and `make compare` regenerated the expected comparison chart.
+- The fresh-clone measurements reproduced `T_c=2.2795` for Metropolis and `T_c=2.2952` for Wolff.
+- At `L=64,T=2.3`, the fresh-clone Wolff run reproduced error ratio `1.45` and `tau_int=0.86`.
+- GitHub Pages deployment completed successfully. The public `?T=1.8`, `?T=2.3`, and `?T=3.0` URLs and `spins.jsonl` all returned HTTP 200 without credentials.
+- The deployed HTML and 410-frame `spins.jsonl` are byte-identical to the tracked files.
+
+All four final-verification checks in the Week 3 learning sheet are complete.
