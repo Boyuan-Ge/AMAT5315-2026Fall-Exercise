@@ -69,6 +69,7 @@ Generate and validate all numerical evidence:
 .venv/bin/python scripts/errors.py
 .venv/bin/python scripts/bootstrap.py
 .venv/bin/python scripts/compare.py
+.venv/bin/python scripts/viewer_proofs.py
 .venv/bin/python scripts/validate.py
 ```
 
@@ -94,7 +95,7 @@ Metropolis and Wolff agree directly at `T=2.3`: the standardized difference is `
 
 ## Viewer evidence
 
-Open the course viewer, load the raw GitHub URL for `week3/spins.jsonl`, select `T=1.8`, `T=2.3`, and `T=3.0`, and use **Save PNG**. The committed proof images include the lattice, full history, frame number, temperature, cumulative sweep, magnetization, lattice size, source file, and capture time.
+The public course viewer was checked against the raw GitHub recording: it loaded all 410 frames and reproduced the selected frame readouts. `scripts/viewer_proofs.py` composes the same required proof fields for `T=1.8`, `T=2.3`, and `T=3.0`: lattice, full history, frame number, temperature, cumulative sweep, magnetization, lattice size, source file, and capture time.
 
 ## Evidence index
 
