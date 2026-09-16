@@ -1,0 +1,8 @@
+Five-point quadratic susceptibility peak fits
+
+L=32: T_peak=2.349542; fit temperatures: 2.25, 2.30, 2.35, 2.40, 2.45
+L=64: T_peak=2.282021; fit temperatures: 2.20, 2.25, 2.30, 2.35, 2.40
+
+Linear 1/L extrapolation Tc = 2*T_peak(64)-T_peak(32) = 2.214500
+Exact Onsager Tc = 2.269185
+Absolute difference = 0.054685

@@ -1,0 +1,9 @@
+Naive versus blocked standard error for |M|
+block length = 2000 measurements
+
+L=32 T=2.0: naive=0.00008420 blocked=0.00032972 inflation=3.92x
+L=32 T=2.3: naive=0.00066220 blocked=0.01235485 inflation=18.66x
+L=32 T=2.6: naive=0.00035923 blocked=0.00263517 inflation=7.34x
+L=64 T=2.0: naive=0.00004330 blocked=0.00015674 inflation=3.62x
+L=64 T=2.3: naive=0.00059607 blocked=0.01821340 inflation=30.56x
+L=64 T=2.6: naive=0.00017548 blocked=0.00094066 inflation=5.36x

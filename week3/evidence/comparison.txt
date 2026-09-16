@@ -1,0 +1,12 @@
+Metropolis versus Wolff comparison
+blocked errors use 4000 measurements
+
+L=32 Metropolis: T_peak=2.349542 +/- 0.006765
+L=32 Wolff: T_peak=2.349134 +/- 0.000432
+L=32 T=2.3 standardized difference d=0.409
+L=64 Metropolis: T_peak=2.282021 +/- 0.023670
+L=64 Wolff: T_peak=2.311619 +/- 0.000227
+L=64 T=2.3 standardized difference d=-0.002
+
+Wolff tau is converted from cluster moves to sweep-equivalent work by multiplying
+by mean_cluster_size / L^2 at each temperature.

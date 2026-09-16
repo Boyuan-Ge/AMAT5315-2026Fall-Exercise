@@ -1,112 +1,106 @@
-# Week 3: Monte Carlo Simulation of the Ising Model
+# Week 3: 2D Ising Monte Carlo
 
-This crate simulates the two-dimensional square-lattice Ising model with periodic boundaries, coupling `J = 1`, no external field, and temperatures in units where Boltzmann's constant is one.
+This directory is the complete Week 3 submission for the revised learning sheet. It implements a reproducible two-dimensional square-lattice Ising simulator with periodic boundaries, `J = 1`, zero external field, and both Metropolis and Wolff updates.
 
-## Physics and reproducibility
+The command-line and file contract is copied exactly from [`ising.design.toml`](ising.design.toml). The public course viewer is <https://giggleliu.github.io/AMAT5315-2026Fall/week3-viewer.html>.
 
-For a proposed single-spin flip, the local energy change is
+## Update and output contract
 
-```text
-delta_E = 2 * s_i * sum(four neighbouring spins).
-```
+The program has one `ising` command. One Metropolis step is exactly `L^2` random-site proposals. One Wolff step is exactly one cluster flip, so its `cluster_size` field makes the computational work observable. A fixed `--seed` controls one random stream across the full temperature ramp.
 
-The random-site Metropolis update accepts the flip with probability `min(1, exp(-delta_E/T))`. One Metropolis sweep is exactly `L^2` proposals. The Wolff update grows an aligned cluster with bond probability `1-exp(-2/T)` and always flips it; one Wolff sweep performs cluster flips until at least `L^2` spins have been touched.
+Every run writes:
 
-Every run constructs `StdRng` from the requested seed. A fixed seed gives the same random-number stream and therefore the same output file, allowing tests and physics results to be reproduced.
+- `run.json`: `L`, update, temperature grid, discard/measurement counts, seed, sampling interval, and time unit;
+- `series.jsonl`: one measurement per line with `L`, `T`, local step, signed `M`, and energy per site `E`; Wolff rows also include `cluster_size`;
+- `spins.jsonl` when `--every` is positive: row-major integer spins and a step counter cumulative across the whole ramp.
 
-## Commands
+## Clean setup and tests
 
-From `week3/`:
+Run these commands from `week3/`:
 
 ```bash
 cargo test --release
+cargo clippy --all-targets --all-features --release -- -D warnings
+cargo install --path . --quiet
 
-cargo run --release -- relax --l 64 --t 1.8 \
-  --sweeps 2000 --measure 2000 --seed 2026
-
-cargo run --release -- snapshots
-cargo run --release -- sweep
-cargo run --release -- analyze artifacts --blocks 50
-cargo run --release -- plot artifacts --blocks 50
-
-cargo run --release -- sweep --wolff
-cargo run --release -- analyze artifacts-wolff --blocks 50
-cargo run --release -- compare-tau artifacts artifacts-wolff \
-  --l 64 --output tau-compare.png --blocks 50
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
 ```
 
-The complete Metropolis workflow is:
+## Exact data-generation commands
+
+Small physics checks and the energy-distribution comparison:
 
 ```bash
-make reproduce
+ising --update metropolis --l 64 --t-from 1.8 --t-to 1.8 --t-step 0.1 --discard 2000 --measure 5000 --seed 2026 --out runs/T1.8
+ising --update metropolis --l 64 --t-from 3.0 --t-to 3.0 --t-step 0.1 --discard 2000 --measure 5000 --seed 2026 --out runs/T3.0
+ising --update metropolis --l 64 --t-from 3.1 --t-to 3.1 --t-step 0.1 --discard 2000 --measure 5000 --seed 2026 --out runs/T3.1
+.venv/bin/python scripts/boltzmann.py
 ```
 
-The complete cluster workflow is:
+The committed 410-frame heating ramp:
 
 ```bash
-make wolff
-make compare
+ising --update metropolis --l 64 --t-from 1.5 --t-to 3.5 --t-step 0.05 --discard 2000 --measure 200 --seed 2026 --every 20 --out runs/ramp
+cp runs/ramp/spins.jsonl spins.jsonl
 ```
 
-Large raw runs are regenerated into `artifacts/` and `artifacts-wolff/` and are intentionally ignored by Git.
+Metropolis coarse and critical-window measurements:
 
-## Artifact contract
+```bash
+ising --update metropolis --l 32 --t-from 1.5 --t-to 3.5 --t-step 0.1 --discard 2000 --measure 5000 --seed 2026 --out artifacts/coarse-l32
+ising --update metropolis --l 64 --t-from 1.5 --t-to 3.5 --t-step 0.1 --discard 2000 --measure 5000 --seed 2026 --out artifacts/coarse-l64
+ising --update metropolis --l 32 --t-from 2.0 --t-to 2.6 --t-step 0.05 --discard 2000 --measure 100000 --seed 2026 --out artifacts/window-l32
+ising --update metropolis --l 64 --t-from 2.0 --t-to 2.6 --t-step 0.05 --discard 2000 --measure 100000 --seed 2026 --out artifacts/window-l64
+```
 
-`run.json` stores `sizes`, `t_grid`, `eq_sweeps`, `meas_sweeps`, `meas_sweeps_critical`, `sample_every`, `seed`, and `algorithm`. Each line of `series.jsonl` stores `L`, `T`, `sweep`, signed magnetization `M`, and energy per site `E`.
+Wolff critical-window measurements, with one cluster flip per step:
 
-The published ramp uses `L`, `T`, `sweep`, `m`, and `spins`, with one row-major spin character per lattice site.
+```bash
+ising --update wolff --l 32 --t-from 2.0 --t-to 2.6 --t-step 0.05 --discard 20000 --measure 100000 --seed 2026 --out artifacts/wolff-l32
+ising --update wolff --l 64 --t-from 2.0 --t-to 2.6 --t-step 0.05 --discard 20000 --measure 100000 --seed 2026 --out artifacts/wolff-l64
+```
 
-## Measured results
+Generate and validate all numerical evidence:
 
-The default Metropolis run produced 2,740,000 rows (153 MB) in 1 minute 48 seconds. Its ordered-phase values at `T=1.5` are `0.986641` for `L=32` and `0.986498` for `L=64`, both above the required `0.9`. The susceptibility peaks are:
+```bash
+.venv/bin/python scripts/plots.py
+.venv/bin/python scripts/peaks.py
+.venv/bin/python scripts/errors.py
+.venv/bin/python scripts/bootstrap.py
+.venv/bin/python scripts/compare.py
+.venv/bin/python scripts/validate.py
+```
+
+Raw `runs/` and `artifacts/` data are reproducible and intentionally ignored by Git. The scripts, compact text summaries, plots, viewer proof PNGs, and `spins.jsonl` are committed. Every committed file is below 5 MB.
+
+## Results and uncertainty
+
+The ordered-phase check at `T=1.8` gave `mean |M| = 0.956908`, while the disordered `T=3.0` run gave `0.042756`. The energy-histogram log-ratio slope was `-0.00894067`; the Boltzmann prediction for `log[P_3.0(E)/P_3.1(E)]` is `-0.01075269`.
+
+Metropolis five-point quadratic susceptibility fits gave:
 
 ```text
-L=32: T_peak = 2.3497
-L=64: T_peak = 2.3146
-T_c = 2.2795
+L=32: T_peak = 2.349542
+L=64: T_peak = 2.282021
+linear 1/L extrapolation: Tc = 2.214500
 ```
 
-The extrapolated critical temperature differs from Onsager's `2.26919` by `0.45%`, inside the required `2%` window.
+The extrapolated value is `0.054685` below the exact Onsager value `2.269185`. This is reported as a finite-sample estimate, not as an exact determination. At `L=64, T=2.3`, blocking by 2,000 sweeps increased the uncertainty of `mean |M|` by `30.56x` over the naive independent-sample estimate, demonstrating critical autocorrelation.
 
-At `L=64, T=2.3`, Metropolis gives:
+The required 500-replicate block bootstraps were run at block lengths 2,000, 4,000, and 8,000. Their peak estimates were stable within bootstrap uncertainty; the full values are in [`evidence/bootstrap.txt`](evidence/bootstrap.txt).
 
-```text
-mean_abs_m = 0.443748
-naive_error = 0.000645
-blocked_error = 0.021010
-blocked/naive ratio = 32.59
-tau_int = 983.76 sweeps
-```
+Metropolis and Wolff agree directly at `T=2.3`: the standardized difference is `d=0.409` for `L=32` and `d=-0.002` for `L=64`. Wolff autocorrelation times in [`evidence/tau-compare.png`](evidence/tau-compare.png) are converted to lattice-sweep work units by multiplying cluster-move time by `mean(cluster_size)/L^2`, so the comparison does not give a full-lattice update to each cluster flip for free.
 
-At `T=3.5`, the ratio falls to `2.22` and `tau_int` to `2.44` sweeps. This shows that the naive error bar fails specifically around the critical transition.
+## Viewer evidence
 
-The Wolff window run produced 2,600,000 rows (146 MB) in 4 minutes 10 seconds. Its fitted peaks are `2.3924` for `L=32` and `2.3438` for `L=64`, giving `T_c=2.2952`, a `1.15%` deviation from Onsager. At `L=64, T=2.3`, it gives:
+Open the course viewer, load the raw GitHub URL for `week3/spins.jsonl`, select `T=1.8`, `T=2.3`, and `T=3.0`, and use **Save PNG**. The committed proof images include the lattice, full history, frame number, temperature, cumulative sweep, magnetization, lattice size, source file, and capture time.
 
-```text
-mean_abs_m = 0.524456
-blocked/naive ratio = 1.45
-tau_int = 0.86 sweeps
-```
+## Evidence index
 
-The cluster update reduces the measured transition autocorrelation time from `983.76` to `0.86` sweeps, approximately a 1,144-fold reduction.
-
-The byte-reproducible Metropolis series has SHA-256:
-
-```text
-8b05e4b1678d63f7460764016f9767839871a4fdbd7f5811291c4557094a6f08
-```
-
-## Code evidence
-
-- Local flip energy: `src/lattice.rs:97`.
-- Seeded generators: `src/protocol.rs:173`, `src/protocol.rs:263`, and `src/protocol.rs:344`.
-- Metropolis/Wolff update selection: `src/protocol.rs:404`.
-- The two-update comparison chart is `tau-compare.png`; regenerate it with `make compare`.
-
-## Pages
-
-The public lattice viewer is:
-
-<https://boyuan-ge.github.io/AMAT5315-2026Fall-Exercise/week3/>
-
-Append `?T=1.8`, `?T=2.3`, or `?T=3.0` to jump to an ordered, critical, or disordered frame after the page has loaded the ramp.
+- [`evidence/boltzmann.png`](evidence/boltzmann.png): energy distributions and Boltzmann slope.
+- [`evidence/magnetization.png`](evidence/magnetization.png), [`evidence/susceptibility.png`](evidence/susceptibility.png), [`evidence/peaks.txt`](evidence/peaks.txt): thermodynamic curves and five-point fits.
+- [`evidence/trace.png`](evidence/trace.png), [`evidence/acf-binning.png`](evidence/acf-binning.png), [`evidence/tau.png`](evidence/tau.png), [`evidence/errors.txt`](evidence/errors.txt): correlation diagnostics.
+- [`evidence/chi-bootstrap.png`](evidence/chi-bootstrap.png), [`evidence/bootstrap.txt`](evidence/bootstrap.txt): required block-length stability test.
+- [`evidence/magnetization-compare.png`](evidence/magnetization-compare.png), [`evidence/tau-compare.png`](evidence/tau-compare.png), [`evidence/comparison.txt`](evidence/comparison.txt): Metropolis/Wolff agreement and work-normalized efficiency.
+- `evidence/viewer-T1.8.png`, `evidence/viewer-T2.3.png`, `evidence/viewer-T3.0.png`: stamped course-viewer proof frames.

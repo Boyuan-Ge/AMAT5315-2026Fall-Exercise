@@ -1,0 +1,10 @@
+Block-bootstrap susceptibility peaks (500 replicates)
+
+L=32 block=2000: T_peak=2.348030 +/- 0.006024
+L=32 block=4000: T_peak=2.347395 +/- 0.006689
+L=32 block=8000: T_peak=2.347880 +/- 0.005770
+L=64 block=2000: T_peak=2.284701 +/- 0.023236
+L=64 block=4000: T_peak=2.286494 +/- 0.022604
+L=64 block=8000: T_peak=2.284486 +/- 0.024911
+
+Stability verdict: stable within bootstrap uncertainty

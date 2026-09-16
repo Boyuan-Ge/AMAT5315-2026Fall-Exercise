@@ -68,6 +68,10 @@ impl Lattice {
         self.spins[index]
     }
 
+    pub fn spins(&self) -> &[i8] {
+        &self.spins
+    }
+
     pub fn flip(&mut self, index: usize) {
         self.spins[index] = -self.spins[index];
     }
