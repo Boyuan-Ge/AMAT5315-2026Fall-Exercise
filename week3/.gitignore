@@ -1,4 +1,5 @@
 /target/
 /artifacts/
+/artifacts-wolff/
 /runs/
 /.venv/
