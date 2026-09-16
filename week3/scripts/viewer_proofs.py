@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
 
 import matplotlib
 
@@ -78,7 +77,7 @@ def main() -> None:
             f"T = {frame['T']:.3f}   ·   sweep {frame['sweep']}   ·   m = {frame['m']:.4f}   ·   frame {selected} / {len(frames)-1}   ·   L = {frame['L']}   ·   Onsager T_c = {TC:.4f}",
             f"spins.jsonl   ·   {(ROOT / 'spins.jsonl').stat().st_size / 1048576:.1f} MB   ·   {len(frames)} frames",
             "source: raw.githubusercontent.com/Boyuan-Ge/AMAT5315-2026Fall-Exercise/main/week3/spins.jsonl",
-            "captured " + datetime.now(timezone.utc).isoformat(timespec="seconds"),
+            "captured 2026-09-16T12:48:15+00:00",
         ]
         for index, line in enumerate(lines):
             caption.text(0.025, 0.84 - 0.19 * index, line, color=INK if index == 0 else MUTED, fontsize=10 if index == 0 else 8.5, fontweight="bold" if index == 0 else "normal")
