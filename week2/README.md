@@ -181,3 +181,21 @@ temperature rises from about 0.2 toward 1.2. The cold animation retains sharp
 distant neighbour-shell peaks, while the hot animation shows neighbour exchange
 and `g(r)` flattening beyond the first peak—evidence that the ordered lattice
 has melted.
+
+## Evidence regeneration index
+
+Run these commands from `week2/` unless a command begins with `cd`. The two profile PNGs are screenshots saved from the Samply Call Tree opened by the corresponding command.
+
+| Evidence file | Generating command |
+|---|---|
+| `field.png` | `cargo run --manifest-path md/Cargo.toml --release --example field -- field.png` |
+| `dimer.png` | `cargo run --manifest-path md/Cargo.toml --release --example dimer -- dimer.png` |
+| `benchmark-results.csv` | `scripts/benchmark.sh` after installing the release `md` binary and creating the NumPy environment described in **Timing** |
+| `profile-naive.png` | `samply record md run --force naive --n 400 --rho 0.8 --temperature 0.5 --dt 0.01 --eq-steps 200 --steps 1000 --sample-every 50 --seed 2026 --out /tmp/amat5315-profile-naive`, then save the Call Tree screenshot |
+| `profile-cells.png` | `samply record md run --force cells --n 400 --rho 0.8 --temperature 0.5 --dt 0.01 --eq-steps 200 --steps 1000 --sample-every 50 --seed 2026 --out /tmp/amat5315-profile-cells`, then save the Call Tree screenshot |
+| `scaling.png` | `cargo run --manifest-path md/Cargo.toml --release --example scaling -- scaling.png 0.04 0.59 8.95 0.03 0.14 0.68` |
+| `fluid.mp4` | `cargo run --manifest-path md/Cargo.toml --release -- video artifacts --out fluid.mp4` after `make reproduce` |
+| `cold.mp4` | `md run --temperature 0.2 --out /tmp/amat5315-week2-cold && md video /tmp/amat5315-week2-cold --out cold.mp4` |
+| `hot.mp4` | `md run --temperature 1.0 --out /tmp/amat5315-week2-hot && md video /tmp/amat5315-week2-hot --out hot.mp4` |
+
+The timing, profiling, and scaling tables above report the measurements derived from these files and commands. Runtime and sampling variation are reported as ranges rather than hidden behind a single number.

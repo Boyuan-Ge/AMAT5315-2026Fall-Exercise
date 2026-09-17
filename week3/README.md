@@ -99,9 +99,17 @@ The public course viewer was checked against the raw GitHub recording: it loaded
 
 ## Evidence index
 
-- [`evidence/boltzmann.png`](evidence/boltzmann.png): energy distributions and Boltzmann slope.
-- [`evidence/magnetization.png`](evidence/magnetization.png), [`evidence/susceptibility.png`](evidence/susceptibility.png), [`evidence/peaks.txt`](evidence/peaks.txt): thermodynamic curves and five-point fits.
-- [`evidence/trace.png`](evidence/trace.png), [`evidence/acf-binning.png`](evidence/acf-binning.png), [`evidence/tau.png`](evidence/tau.png), [`evidence/errors.txt`](evidence/errors.txt): correlation diagnostics.
-- [`evidence/chi-bootstrap.png`](evidence/chi-bootstrap.png), [`evidence/bootstrap.txt`](evidence/bootstrap.txt): required block-length stability test.
-- [`evidence/magnetization-compare.png`](evidence/magnetization-compare.png), [`evidence/tau-compare.png`](evidence/tau-compare.png), [`evidence/comparison.txt`](evidence/comparison.txt): Metropolis/Wolff agreement and work-normalized efficiency.
-- `evidence/viewer-T1.8.png`, `evidence/viewer-T2.3.png`, `evidence/viewer-T3.0.png`: stamped course-viewer proof frames.
+Run the commands in this order from `week3/`, after generating the `runs/` and `artifacts/` folders with the commands above.
+
+| Generating command | Committed output files |
+|---|---|
+| `.venv/bin/python scripts/boltzmann.py` | [`evidence/boltzmann.png`](evidence/boltzmann.png) |
+| `.venv/bin/python scripts/plots.py` | [`evidence/magnetization.png`](evidence/magnetization.png), [`evidence/susceptibility.png`](evidence/susceptibility.png) |
+| `.venv/bin/python scripts/peaks.py` | [`evidence/peaks.txt`](evidence/peaks.txt) |
+| `.venv/bin/python scripts/errors.py` | [`evidence/errors.txt`](evidence/errors.txt), [`evidence/trace.png`](evidence/trace.png), [`evidence/acf-binning.png`](evidence/acf-binning.png), [`evidence/tau.png`](evidence/tau.png) |
+| `.venv/bin/python scripts/bootstrap.py` | [`evidence/bootstrap.txt`](evidence/bootstrap.txt), [`evidence/chi-bootstrap.png`](evidence/chi-bootstrap.png) |
+| `.venv/bin/python scripts/compare.py` | [`evidence/comparison.txt`](evidence/comparison.txt), [`evidence/magnetization-compare.png`](evidence/magnetization-compare.png), [`evidence/tau-compare.png`](evidence/tau-compare.png) |
+| `.venv/bin/python scripts/viewer_proofs.py` | [`evidence/viewer-T1.8.png`](evidence/viewer-T1.8.png), [`evidence/viewer-T2.3.png`](evidence/viewer-T2.3.png), [`evidence/viewer-T3.0.png`](evidence/viewer-T3.0.png) |
+| `.venv/bin/python scripts/validate.py` | Validation report on standard output; checks 5,410,000 measurement rows, 410 viewer frames, schemas, and committed-file sizes |
+
+The root recording `spins.jsonl` is produced by the heating-ramp `ising` command followed by `cp runs/ramp/spins.jsonl spins.jsonl`, as shown above. This table covers every file currently committed in `week3/evidence/` and gives its producing command explicitly.
