@@ -9,6 +9,7 @@ This public repository contains Boyuan's weekly exercises and learning records f
 | [Week 1](week1/) | AI agents, Git, specification-first development, and a Monte Carlo estimate of pi | This README and [`week1/SPEC.md`](week1/SPEC.md) |
 | [Week 2](week2/) | Molecular dynamics, numerical integration, profiling, and optimization | [`week2/README.md`](week2/README.md) |
 | [Week 3](week3/) | Metropolis and Wolff Monte Carlo for the 2D Ising model | [`week3/README.md`](week3/README.md) |
+| [Week 4](week4/) | Continuum fluid dynamics, spectral derivatives, stability, and convergence | [`week4/README.md`](week4/README.md) |
 
 Repository-level files stay at the top level intentionally:
 

@@ -1,0 +1,36 @@
+{
+  "reference": {
+    "n": 128,
+    "dt": 0.0025,
+    "t": 2,
+    "seed": 2026,
+    "nu": 0.004,
+    "k_band": [
+      2,
+      6
+    ]
+  },
+  "runs": [
+    {
+      "dt": 0.02,
+      "relative_error": 2.025595655505311e-05,
+      "richardson_prediction": 2.0316322104046672e-05
+    },
+    {
+      "dt": 0.0125,
+      "relative_error": 3.0436750840352925e-06,
+      "richardson_prediction": 3.1000247351145434e-06
+    },
+    {
+      "dt": 0.01,
+      "relative_error": 1.2433861649677777e-06,
+      "richardson_prediction": 1.269770131502917e-06
+    }
+  ],
+  "log_log_slope": 4.027034661870794,
+  "richardson_at_dt_0_01": 1.269770131502917e-06,
+  "threshold": 5e-06,
+  "chosen_dt": 0.0125,
+  "chosen_predicted_error": 3.1000247351145434e-06,
+  "chosen_measured_error": 3.0436750840352925e-06
+}
