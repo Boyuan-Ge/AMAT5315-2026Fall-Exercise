@@ -1,0 +1,41 @@
+usage = "seismic --experiment inputs/reflector.json --mode forward --every 3 --out artifacts/forward"
+description = "simulate acoustic waves and their derivatives; no unstated defaults"
+
+[args]
+experiment = """JSON file with the model and survey, in reduced units:
+nx, nz grid points; dx, dt, steps; source_frequency, source_peak_time,
+source_amplitude; shots and receivers as [x,z] grid indices; sponge_width,
+sponge_strength; background and perturbation as [z][x] arrays;
+length_unit_m and time_unit_s."""
+mode = "forward: pressure traces; born: Born scattered data; adjoint: migrated image"
+out = "output folder"
+
+[writes]
+stdout = "a header, then one tab-separated line per shot: shot, mode, data L2 norm"
+"<out>/run.json" = "experiment_file and experiment fields except background and perturbation"
+"<out>/result.json" = "mode, nx, nz, dx, dt, steps, shots, receivers"
+"<out>/traces.npy" = "forward: float64 pressures [shot, step, receiver]"
+"<out>/born_data.npy" = "born: float64 scattered data [shot, step, receiver]"
+"<out>/image.npy" = "adjoint: float64 velocity sensitivity [z, x]"
+
+[args.recording]
+every = "forward and adjoint only: frame interval in steps from step 0; default off"
+
+[writes.recording]
+"<out>/wavefield.npy" = "float32 frames of the first shot [frame,z,x]: forward increasing, adjoint decreasing step order"
+"<out>/echo.npy" = "forward only: float32 difference of perturbed and background wavefields"
+"<out>/run.json" = "recording adds every, steps and times (step*dt)"
+
+[args.reverse]
+data = "born_data.npy of a born run: receiver weights to back-propagate"
+
+[writes.reverse]
+"<out>/result.json" = "statistics: storage, checkpoints, reverse_calls, scheduler_forward_calls, peak_saved_states, peak_saved_bytes, per_shot"
+
+[args.checkpoint]
+storage = "how adjoint keeps states: full (default) or treeverse"
+checkpoints = "treeverse only: saved-state slots beyond initial state"
+
+[writes.checkpoint]
+"<out>/actions-<shot>.json" = "actions store, restore, call, grad, fetch with step and saved_states after action"
+"<out>/result.json" = "as full history, with treeverse checkpoint budget and actions_file per shot"

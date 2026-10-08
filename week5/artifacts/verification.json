@@ -1,0 +1,129 @@
+{
+  "trace_l2": 11.574769503614014,
+  "shot_extrema": [
+    {
+      "shot": 0,
+      "trace_index": 83,
+      "receiver": 1,
+      "pressure": 0.60809514342744
+    },
+    {
+      "shot": 1,
+      "trace_index": 83,
+      "receiver": 6,
+      "pressure": 0.5927139734671293
+    },
+    {
+      "shot": 2,
+      "trace_index": 83,
+      "receiver": 12,
+      "pressure": 0.60809514342744
+    }
+  ],
+  "wavefield_step150_max": 0.2535175383090973,
+  "echo_step150_max": 0.006005141884088516,
+  "transpose_left": 0.034847890215163775,
+  "transpose_right": 0.03484789021516376,
+  "transpose_relative_error": 3.9823896718360443e-16,
+  "image_peak_row": 21,
+  "checkpoint_runs": [
+    {
+      "budget": 1,
+      "image_relative_error": 0.0,
+      "audit": [
+        {
+          "bad_grads": 0,
+          "invalid_restores": 0,
+          "budget_overruns": 0
+        },
+        {
+          "bad_grads": 0,
+          "invalid_restores": 0,
+          "budget_overruns": 0
+        },
+        {
+          "bad_grads": 0,
+          "invalid_restores": 0,
+          "budget_overruns": 0
+        }
+      ],
+      "forward_calls_per_shot": 28680,
+      "peak_saved_states": 2,
+      "peak_saved_bytes": 53792
+    },
+    {
+      "budget": 3,
+      "image_relative_error": 0.0,
+      "audit": [
+        {
+          "bad_grads": 0,
+          "invalid_restores": 0,
+          "budget_overruns": 0
+        },
+        {
+          "bad_grads": 0,
+          "invalid_restores": 0,
+          "budget_overruns": 0
+        },
+        {
+          "bad_grads": 0,
+          "invalid_restores": 0,
+          "budget_overruns": 0
+        }
+      ],
+      "forward_calls_per_shot": 1695,
+      "peak_saved_states": 4,
+      "peak_saved_bytes": 107584
+    },
+    {
+      "budget": 5,
+      "image_relative_error": 0.0,
+      "audit": [
+        {
+          "bad_grads": 0,
+          "invalid_restores": 0,
+          "budget_overruns": 0
+        },
+        {
+          "bad_grads": 0,
+          "invalid_restores": 0,
+          "budget_overruns": 0
+        },
+        {
+          "bad_grads": 0,
+          "invalid_restores": 0,
+          "budget_overruns": 0
+        }
+      ],
+      "forward_calls_per_shot": 990,
+      "peak_saved_states": 6,
+      "peak_saved_bytes": 161376
+    },
+    {
+      "budget": 10,
+      "image_relative_error": 0.0,
+      "audit": [
+        {
+          "bad_grads": 0,
+          "invalid_restores": 0,
+          "budget_overruns": 0
+        },
+        {
+          "bad_grads": 0,
+          "invalid_restores": 0,
+          "budget_overruns": 0
+        },
+        {
+          "bad_grads": 0,
+          "invalid_restores": 0,
+          "budget_overruns": 0
+        }
+      ],
+      "forward_calls_per_shot": 642,
+      "peak_saved_states": 11,
+      "peak_saved_bytes": 295856
+    }
+  ],
+  "marmousi_image_l2": 0.0006703774060378285,
+  "marmousi_peak_saved_bytes": 20788320
+}

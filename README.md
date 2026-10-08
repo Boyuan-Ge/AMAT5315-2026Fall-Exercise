@@ -10,6 +10,7 @@ This public repository contains Boyuan's weekly exercises and learning records f
 | [Week 2](week2/) | Molecular dynamics, numerical integration, profiling, and optimization | [`week2/README.md`](week2/README.md) |
 | [Week 3](week3/) | Metropolis and Wolff Monte Carlo for the 2D Ising model | [`week3/README.md`](week3/README.md) |
 | [Week 4](week4/) | Continuum fluid dynamics, spectral derivatives, stability, and convergence | [`week4/README.md`](week4/README.md) |
+| [Week 5](week5/) | Automatic differentiation, seismic propagation, Enzyme, and Treeverse checkpointing | [`week5/README.md`](week5/README.md), with all result figures embedded |
 
 Repository-level files stay at the top level intentionally:
 

@@ -1,0 +1,6 @@
+inputs/
+week5-inputs.zip
+*.npy
+target/
+.venv/
+__pycache__/
