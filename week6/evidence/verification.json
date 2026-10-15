@@ -1,0 +1,82 @@
+{
+  "all_required_numerical_checks_passed": true,
+  "dataset_original_splits": true,
+  "training_images": 60000,
+  "epochs": 20,
+  "hidden_units": 128,
+  "matched_initialization": true,
+  "matched_training_order": true,
+  "reconstruction_less_than_half_initial": true,
+  "matched_fresh_generation_starts": true,
+  "completion_upper_half_exactly_clamped": true,
+  "completion_correct_minus_wrong_at_1000": {
+    "cd1": 0.1658330261707306,
+    "cd10": 0.24191370606422424
+  },
+  "random_hopfield_runs": {
+    "100": {
+      "seconds": 0.849758018999978,
+      "pattern_sets": 420,
+      "recall_starts": 3900
+    },
+    "200": {
+      "seconds": 1.1517076200000247,
+      "pattern_sets": 420,
+      "recall_starts": 4200
+    },
+    "400": {
+      "seconds": 5.1860743039999875,
+      "pattern_sets": 420,
+      "recall_starts": 4200
+    },
+    "800": {
+      "seconds": 75.95187678500002,
+      "pattern_sets": 420,
+      "recall_starts": 4200
+    }
+  },
+  "capacity_crossings": {
+    "100": 0.18466665857488426,
+    "200": 0.16826961419620687,
+    "400": 0.15619669863622349,
+    "800": 0.1488369761986738
+  },
+  "modern_attention_max_error": 4.827976226806641e-06,
+  "modern_beta_point3_min_success": 0.9799999594688416,
+  "classical_digit_success": 0,
+  "embedded_result_figures": 15,
+  "raw_runs_and_downloads": "ignored; retained locally under artifacts/ and inputs/",
+  "environment": {
+    "python": "3.14.4",
+    "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "jax": "0.11.2",
+    "numpy": "2.5.3",
+    "scipy": "1.18.1",
+    "devices": [
+      "cpu:0"
+    ],
+    "cpu_count": 20,
+    "cpu_affinity": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19
+    ]
+  }
+}

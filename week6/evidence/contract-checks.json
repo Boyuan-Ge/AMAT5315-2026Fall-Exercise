@@ -1,0 +1,11 @@
+{
+  "free_energy_enumeration_max_error": 2.384185791015625e-07,
+  "cd_gradient_closed_form_max_error": 5.960464477539063e-08,
+  "gibbs_binary_and_clamp": true,
+  "hopfield_zero_diagonal": true,
+  "recall_final_state_stable": true,
+  "recall_energy_nonincreasing": true,
+  "zero_field_unchanged": true,
+  "attention_max_error": 5.960464477539063e-08,
+  "wrong_attention_scale_negative_control": 0.8332957625389099
+}
