@@ -1,0 +1,11 @@
+{
+  "criterion": "first interpolated crossing of mean final overlap below 0.9",
+  "crossings": {
+    "100": 0.18466665857488426,
+    "200": 0.16826961419620687,
+    "400": 0.15619669863622349,
+    "800": 0.1488369761986738
+  },
+  "within_reference_tolerance": true,
+  "decreases_with_N": true
+}

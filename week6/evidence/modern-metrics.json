@@ -1,0 +1,431 @@
+{
+  "seed": 6604,
+  "queries_per_load": 100,
+  "stored_order": "first P training images",
+  "lower_half": "independent fair random spins",
+  "betas": [
+    0.001,
+    0.003,
+    0.01,
+    0.03,
+    0.1,
+    0.3,
+    1.0
+  ],
+  "rows": [
+    {
+      "p": 3,
+      "beta": 0.001,
+      "modern_success": 0.0,
+      "classical_success": 0.0,
+      "attention_max_error": 1.1920928955078125e-07,
+      "mean_modern_overlap": 0.8117346167564392,
+      "mean_classical_overlap": 0.8117346167564392
+    },
+    {
+      "p": 3,
+      "beta": 0.003,
+      "modern_success": 0.0,
+      "classical_success": 0.0,
+      "attention_max_error": 1.1920928955078125e-07,
+      "mean_modern_overlap": 0.8117346167564392,
+      "mean_classical_overlap": 0.8117346167564392
+    },
+    {
+      "p": 3,
+      "beta": 0.01,
+      "modern_success": 1.0,
+      "classical_success": 0.0,
+      "attention_max_error": 5.960464477539063e-08,
+      "mean_modern_overlap": 1.0,
+      "mean_classical_overlap": 0.8117346167564392
+    },
+    {
+      "p": 3,
+      "beta": 0.03,
+      "modern_success": 1.0,
+      "classical_success": 0.0,
+      "attention_max_error": 0.0,
+      "mean_modern_overlap": 1.0,
+      "mean_classical_overlap": 0.8117346167564392
+    },
+    {
+      "p": 3,
+      "beta": 0.1,
+      "modern_success": 1.0,
+      "classical_success": 0.0,
+      "attention_max_error": 0.0,
+      "mean_modern_overlap": 1.0,
+      "mean_classical_overlap": 0.8117346167564392
+    },
+    {
+      "p": 3,
+      "beta": 0.3,
+      "modern_success": 1.0,
+      "classical_success": 0.0,
+      "attention_max_error": 0.0,
+      "mean_modern_overlap": 1.0,
+      "mean_classical_overlap": 0.8117346167564392
+    },
+    {
+      "p": 3,
+      "beta": 1.0,
+      "modern_success": 1.0,
+      "classical_success": 0.0,
+      "attention_max_error": 0.0,
+      "mean_modern_overlap": 1.0,
+      "mean_classical_overlap": 0.8117346167564392
+    },
+    {
+      "p": 10,
+      "beta": 0.001,
+      "modern_success": 0.0,
+      "classical_success": 0.0,
+      "attention_max_error": 1.7881393432617188e-07,
+      "mean_modern_overlap": 0.8295408487319946,
+      "mean_classical_overlap": 0.7834183573722839
+    },
+    {
+      "p": 10,
+      "beta": 0.003,
+      "modern_success": 0.0,
+      "classical_success": 0.0,
+      "attention_max_error": 1.7881393432617188e-07,
+      "mean_modern_overlap": 0.8307397365570068,
+      "mean_classical_overlap": 0.7834183573722839
+    },
+    {
+      "p": 10,
+      "beta": 0.01,
+      "modern_success": 0.09999999403953552,
+      "classical_success": 0.0,
+      "attention_max_error": 1.7881393432617188e-07,
+      "mean_modern_overlap": 0.8821682929992676,
+      "mean_classical_overlap": 0.7834183573722839
+    },
+    {
+      "p": 10,
+      "beta": 0.03,
+      "modern_success": 1.0,
+      "classical_success": 0.0,
+      "attention_max_error": 1.7881393432617188e-07,
+      "mean_modern_overlap": 0.999005138874054,
+      "mean_classical_overlap": 0.7834183573722839
+    },
+    {
+      "p": 10,
+      "beta": 0.1,
+      "modern_success": 1.0,
+      "classical_success": 0.0,
+      "attention_max_error": 1.1920928955078125e-07,
+      "mean_modern_overlap": 1.0,
+      "mean_classical_overlap": 0.7834183573722839
+    },
+    {
+      "p": 10,
+      "beta": 0.3,
+      "modern_success": 1.0,
+      "classical_success": 0.0,
+      "attention_max_error": 5.960464477539063e-08,
+      "mean_modern_overlap": 1.0,
+      "mean_classical_overlap": 0.7834183573722839
+    },
+    {
+      "p": 10,
+      "beta": 1.0,
+      "modern_success": 1.0,
+      "classical_success": 0.0,
+      "attention_max_error": 0.0,
+      "mean_modern_overlap": 1.0,
+      "mean_classical_overlap": 0.7834183573722839
+    },
+    {
+      "p": 30,
+      "beta": 0.001,
+      "modern_success": 0.0,
+      "classical_success": 0.0,
+      "attention_max_error": 2.980232238769531e-07,
+      "mean_modern_overlap": 0.7785458564758301,
+      "mean_classical_overlap": 0.7640050649642944
+    },
+    {
+      "p": 30,
+      "beta": 0.003,
+      "modern_success": 0.0,
+      "classical_success": 0.0,
+      "attention_max_error": 3.5762786865234375e-07,
+      "mean_modern_overlap": 0.7802295684814453,
+      "mean_classical_overlap": 0.7640050649642944
+    },
+    {
+      "p": 30,
+      "beta": 0.01,
+      "modern_success": 0.0,
+      "classical_success": 0.0,
+      "attention_max_error": 2.980232238769531e-07,
+      "mean_modern_overlap": 0.8190815448760986,
+      "mean_classical_overlap": 0.7640050649642944
+    },
+    {
+      "p": 30,
+      "beta": 0.03,
+      "modern_success": 0.8299999833106995,
+      "classical_success": 0.0,
+      "attention_max_error": 3.5762786865234375e-07,
+      "mean_modern_overlap": 0.9826275110244751,
+      "mean_classical_overlap": 0.7640050649642944
+    },
+    {
+      "p": 30,
+      "beta": 0.1,
+      "modern_success": 0.9899999499320984,
+      "classical_success": 0.0,
+      "attention_max_error": 2.980232238769531e-07,
+      "mean_modern_overlap": 0.9998214840888977,
+      "mean_classical_overlap": 0.7640050649642944
+    },
+    {
+      "p": 30,
+      "beta": 0.3,
+      "modern_success": 0.9899999499320984,
+      "classical_success": 0.0,
+      "attention_max_error": 1.1920928955078125e-07,
+      "mean_modern_overlap": 0.9998214840888977,
+      "mean_classical_overlap": 0.7640050649642944
+    },
+    {
+      "p": 30,
+      "beta": 1.0,
+      "modern_success": 0.9899999499320984,
+      "classical_success": 0.0,
+      "attention_max_error": 0.0,
+      "mean_modern_overlap": 0.9998214840888977,
+      "mean_classical_overlap": 0.7640050649642944
+    },
+    {
+      "p": 100,
+      "beta": 0.001,
+      "modern_success": 0.0,
+      "classical_success": 0.0,
+      "attention_max_error": 8.940696716308594e-07,
+      "mean_modern_overlap": 0.7541837096214294,
+      "mean_classical_overlap": 0.7491582632064819
+    },
+    {
+      "p": 100,
+      "beta": 0.003,
+      "modern_success": 0.0,
+      "classical_success": 0.0,
+      "attention_max_error": 7.152557373046875e-07,
+      "mean_modern_overlap": 0.7629591226577759,
+      "mean_classical_overlap": 0.7491582632064819
+    },
+    {
+      "p": 100,
+      "beta": 0.01,
+      "modern_success": 0.0,
+      "classical_success": 0.0,
+      "attention_max_error": 6.556510925292969e-07,
+      "mean_modern_overlap": 0.7944387197494507,
+      "mean_classical_overlap": 0.7491582632064819
+    },
+    {
+      "p": 100,
+      "beta": 0.03,
+      "modern_success": 0.20999999344348907,
+      "classical_success": 0.0,
+      "attention_max_error": 5.960464477539062e-07,
+      "mean_modern_overlap": 0.9183418154716492,
+      "mean_classical_overlap": 0.7491582632064819
+    },
+    {
+      "p": 100,
+      "beta": 0.1,
+      "modern_success": 0.9899999499320984,
+      "classical_success": 0.0,
+      "attention_max_error": 4.76837158203125e-07,
+      "mean_modern_overlap": 0.9995663166046143,
+      "mean_classical_overlap": 0.7491582632064819
+    },
+    {
+      "p": 100,
+      "beta": 0.3,
+      "modern_success": 1.0,
+      "classical_success": 0.0,
+      "attention_max_error": 1.1920928955078125e-07,
+      "mean_modern_overlap": 1.0,
+      "mean_classical_overlap": 0.7491582632064819
+    },
+    {
+      "p": 100,
+      "beta": 1.0,
+      "modern_success": 1.0,
+      "classical_success": 0.0,
+      "attention_max_error": 0.0,
+      "mean_modern_overlap": 1.0,
+      "mean_classical_overlap": 0.7491582632064819
+    },
+    {
+      "p": 300,
+      "beta": 0.001,
+      "modern_success": 0.0,
+      "classical_success": 0.0,
+      "attention_max_error": 1.3709068298339844e-06,
+      "mean_modern_overlap": 0.7498214244842529,
+      "mean_classical_overlap": 0.7452806234359741
+    },
+    {
+      "p": 300,
+      "beta": 0.003,
+      "modern_success": 0.0,
+      "classical_success": 0.0,
+      "attention_max_error": 1.430511474609375e-06,
+      "mean_modern_overlap": 0.7544132471084595,
+      "mean_classical_overlap": 0.7452806234359741
+    },
+    {
+      "p": 300,
+      "beta": 0.01,
+      "modern_success": 0.0,
+      "classical_success": 0.0,
+      "attention_max_error": 1.4901161193847656e-06,
+      "mean_modern_overlap": 0.7743113040924072,
+      "mean_classical_overlap": 0.7452806234359741
+    },
+    {
+      "p": 300,
+      "beta": 0.03,
+      "modern_success": 0.029999999329447746,
+      "classical_success": 0.0,
+      "attention_max_error": 1.430511474609375e-06,
+      "mean_modern_overlap": 0.856071412563324,
+      "mean_classical_overlap": 0.7452806234359741
+    },
+    {
+      "p": 300,
+      "beta": 0.1,
+      "modern_success": 0.9799999594688416,
+      "classical_success": 0.0,
+      "attention_max_error": 1.3113021850585938e-06,
+      "mean_modern_overlap": 0.9973724484443665,
+      "mean_classical_overlap": 0.7452806234359741
+    },
+    {
+      "p": 300,
+      "beta": 0.3,
+      "modern_success": 0.9799999594688416,
+      "classical_success": 0.0,
+      "attention_max_error": 2.384185791015625e-07,
+      "mean_modern_overlap": 0.9979081749916077,
+      "mean_classical_overlap": 0.7452806234359741
+    },
+    {
+      "p": 300,
+      "beta": 1.0,
+      "modern_success": 0.9799999594688416,
+      "classical_success": 0.0,
+      "attention_max_error": 0.0,
+      "mean_modern_overlap": 0.9979081749916077,
+      "mean_classical_overlap": 0.7452806234359741
+    },
+    {
+      "p": 1000,
+      "beta": 0.001,
+      "modern_success": 0.0,
+      "classical_success": 0.0,
+      "attention_max_error": 4.827976226806641e-06,
+      "mean_modern_overlap": 0.7474744915962219,
+      "mean_classical_overlap": 0.7457908391952515
+    },
+    {
+      "p": 1000,
+      "beta": 0.003,
+      "modern_success": 0.0,
+      "classical_success": 0.0,
+      "attention_max_error": 4.231929779052734e-06,
+      "mean_modern_overlap": 0.751352071762085,
+      "mean_classical_overlap": 0.7457908391952515
+    },
+    {
+      "p": 1000,
+      "beta": 0.01,
+      "modern_success": 0.0,
+      "classical_success": 0.0,
+      "attention_max_error": 3.6954879760742188e-06,
+      "mean_modern_overlap": 0.7651530504226685,
+      "mean_classical_overlap": 0.7457908391952515
+    },
+    {
+      "p": 1000,
+      "beta": 0.03,
+      "modern_success": 0.0,
+      "classical_success": 0.0,
+      "attention_max_error": 4.708766937255859e-06,
+      "mean_modern_overlap": 0.8222448825836182,
+      "mean_classical_overlap": 0.7457908391952515
+    },
+    {
+      "p": 1000,
+      "beta": 0.1,
+      "modern_success": 0.9199999570846558,
+      "classical_success": 0.0,
+      "attention_max_error": 4.172325134277344e-06,
+      "mean_modern_overlap": 0.9930101633071899,
+      "mean_classical_overlap": 0.7457908391952515
+    },
+    {
+      "p": 1000,
+      "beta": 0.3,
+      "modern_success": 0.9899999499320984,
+      "classical_success": 0.0,
+      "attention_max_error": 5.960464477539062e-07,
+      "mean_modern_overlap": 0.9996683597564697,
+      "mean_classical_overlap": 0.7457908391952515
+    },
+    {
+      "p": 1000,
+      "beta": 1.0,
+      "modern_success": 0.9899999499320984,
+      "classical_success": 0.0,
+      "attention_max_error": 5.960464477539063e-08,
+      "mean_modern_overlap": 0.9996428489685059,
+      "mean_classical_overlap": 0.7457908391952515
+    }
+  ],
+  "attention_max_error": 4.827976226806641e-06,
+  "seconds": 4.20757598900002,
+  "success": "signed overlap >= 0.95 and target is nearest stored digit",
+  "environment": {
+    "python": "3.14.4",
+    "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "jax": "0.11.2",
+    "numpy": "2.5.3",
+    "scipy": "1.18.1",
+    "devices": [
+      "cpu:0"
+    ],
+    "cpu_count": 20,
+    "cpu_affinity": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19
+    ]
+  }
+}
