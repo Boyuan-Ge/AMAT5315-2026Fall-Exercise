@@ -1,0 +1,13 @@
+[project]
+name = "amat5315-week6"
+version = "0.1.0"
+description = "Energy-based models: RBM and classical/modern Hopfield experiments"
+requires-python = ">=3.14"
+dependencies = [
+  "jax==0.11.2",
+  "numpy==2.5.3",
+  "matplotlib==3.11.2",
+  "scipy==1.18.1",
+]
+[tool.uv]
+package = false
