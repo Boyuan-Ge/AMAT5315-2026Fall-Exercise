@@ -1,0 +1,8 @@
+[project]
+name = "amat5315-week7"
+version = "0.1.0"
+description = "JAX diffusion, flow matching, fixed CIFAR-10 U-Net, and RePaint"
+requires-python = ">=3.14"
+dependencies = ["jax==0.11.2", "numpy==2.5.3", "scipy==1.18.1", "matplotlib==3.11.2", "safetensors==0.8.0", "huggingface-hub==1.33.0"]
+[tool.uv]
+package = false
