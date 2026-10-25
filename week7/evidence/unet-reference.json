@@ -1,0 +1,56 @@
+{
+  "revision": "267b167dc01f0e4e61923ea244e8b988f84deb80",
+  "reference": "diffusers.UNet2DModel",
+  "diffusers_version": "0.40.0",
+  "torch_version": "2.10.0+cpu",
+  "tensor_count": 328,
+  "parameter_count": 35746307,
+  "weight_sha256": "1558dbe3fb093b0857d473e376b711eeda1b186c557be5e85b3a56300cd49f0f",
+  "input_seed": 7200,
+  "input_shape": [
+    2,
+    3,
+    32,
+    32
+  ],
+  "comparisons": [
+    {
+      "model_index": 0,
+      "max_absolute_error": 7.62939453125e-06,
+      "relative_rms_error": 6.363944748954964e-07
+    },
+    {
+      "model_index": 499,
+      "max_absolute_error": 4.76837158203125e-06,
+      "relative_rms_error": 5.649044396704994e-07
+    },
+    {
+      "model_index": 999,
+      "max_absolute_error": 5.4836273193359375e-06,
+      "relative_rms_error": 5.627170480693167e-07
+    }
+  ],
+  "jax_seconds_per_batch4": 0.11219569879999654,
+  "all_reference_checks_passed": true,
+  "environment": {
+    "python": "3.14.4",
+    "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "jax": "0.11.2",
+    "numpy": "2.5.3",
+    "scipy": "1.18.1",
+    "devices": [
+      "cpu:0"
+    ],
+    "cpu_count": 20,
+    "cpu_affinity": [
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ]
+  }
+}

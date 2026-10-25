@@ -1,0 +1,109 @@
+{
+  "generation": {
+    "seed": 7200,
+    "steps": 1000,
+    "images": 4,
+    "model_index": "mathematical t minus 1",
+    "state_clipping": false,
+    "display": "(x+1)/2 clipped only at rendering",
+    "seconds": 106.67588573199998,
+    "terminal_min": -1.0318024158477783,
+    "terminal_max": 1.0111616849899292
+  },
+  "inpainting": {
+    "seeds": [
+      7201,
+      7202,
+      7203,
+      7204
+    ],
+    "images": 4,
+    "hidden_rows_columns": "6:26, all channels",
+    "reverse_jumps": 50,
+    "attempts": "two per jump except final jump once",
+    "network_evaluations_per_completion": 99,
+    "hidden_mse_by_seed_then_image": [
+      [
+        0.17816205322742462,
+        0.32615143060684204,
+        0.15608690679073334,
+        0.1594250202178955
+      ],
+      [
+        0.1590510755777359,
+        0.1925288438796997,
+        0.1275416910648346,
+        0.1809540092945099
+      ],
+      [
+        0.1249266192317009,
+        0.1322793811559677,
+        0.2277415692806244,
+        0.236983522772789
+      ],
+      [
+        0.2760362923145294,
+        0.16445660591125488,
+        0.26147860288619995,
+        0.21713116765022278
+      ]
+    ],
+    "observed_max_change_by_seed_then_image": [
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "mean_hidden_mse": 0.1950584244914353,
+    "max_observed_change": 0.0,
+    "mean_variance_inside_hole": 0.06737248599529266,
+    "max_variance_observed": 0.0,
+    "seconds": 43.54564273300002,
+    "sampler_inputs": "fixed predictor, observed image with hidden entries zero, mask, RNG key"
+  },
+  "revision": "267b167dc01f0e4e61923ea244e8b988f84deb80",
+  "weights_sha256": "1558dbe3fb093b0857d473e376b711eeda1b186c557be5e85b3a56300cd49f0f",
+  "weights_unchanged": true,
+  "predictor_implementation": "pure JAX",
+  "environment": {
+    "python": "3.14.4",
+    "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "jax": "0.11.2",
+    "numpy": "2.5.3",
+    "scipy": "1.18.1",
+    "devices": [
+      "cpu:0"
+    ],
+    "cpu_count": 20,
+    "cpu_affinity": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  }
+}

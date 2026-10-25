@@ -12,6 +12,7 @@ This public repository contains Boyuan's weekly exercises and learning records f
 | [Week 4](week4/) | Continuum fluid dynamics, spectral derivatives, stability, and convergence | [`week4/README.md`](week4/README.md) |
 | [Week 5](week5/) | Automatic differentiation, seismic propagation, Enzyme, and Treeverse checkpointing | [`week5/README.md`](week5/README.md), with all result figures embedded |
 | [Week 6](week6/) | Energy-based models, RBM generation and completion, Hopfield capacity, and attention | [`week6/README.md`](week6/README.md), with all 15 result figures embedded |
+| [Week 7](week7/) | Diffusion, DDIM, flow matching, pretrained JAX image generation, and RePaint inpainting | [`week7/README.md`](week7/README.md), with all 11 result figures and 3 movies embedded |
 
 Repository-level files stay at the top level intentionally:
 
