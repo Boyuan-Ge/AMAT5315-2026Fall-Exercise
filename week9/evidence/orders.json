@@ -1,0 +1,595 @@
+{
+  "plans": {
+    "random": {
+      "method": "random",
+      "settings": {
+        "rng": "rand StdRng; uniform pair",
+        "seed": 42
+      },
+      "planning_seconds": 1.56e-05,
+      "inputs": [
+        [
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          2
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          5,
+          3,
+          1
+        ],
+        [
+          6,
+          5
+        ],
+        [
+          7,
+          5,
+          4
+        ],
+        [
+          0
+        ],
+        [
+          7
+        ]
+      ],
+      "output": [],
+      "steps": [
+        {
+          "left": 5,
+          "right": 0,
+          "retain": [
+            0,
+            1,
+            3,
+            5
+          ]
+        },
+        {
+          "left": 1,
+          "right": 8,
+          "retain": [
+            0,
+            1
+          ]
+        },
+        {
+          "left": 11,
+          "right": 3,
+          "retain": [
+            0,
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "left": 2,
+          "right": 6,
+          "retain": [
+            2,
+            5
+          ]
+        },
+        {
+          "left": 10,
+          "right": 7,
+          "retain": [
+            0,
+            1,
+            3,
+            4,
+            5,
+            7
+          ]
+        },
+        {
+          "left": 12,
+          "right": 4,
+          "retain": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ]
+        },
+        {
+          "left": 15,
+          "right": 13,
+          "retain": [
+            0,
+            1,
+            3,
+            4,
+            5
+          ]
+        },
+        {
+          "left": 14,
+          "right": 9,
+          "retain": [
+            0,
+            1,
+            3,
+            4,
+            5
+          ]
+        },
+        {
+          "left": 16,
+          "right": 17,
+          "retain": []
+        }
+      ]
+    },
+    "greedy": {
+      "method": "greedy",
+      "settings": {
+        "library": "omeco 0.2.6",
+        "method": "GreedyMethod defaults"
+      },
+      "planning_seconds": 9.71e-05,
+      "inputs": [
+        [
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          2
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          5,
+          3,
+          1
+        ],
+        [
+          6,
+          5
+        ],
+        [
+          7,
+          5,
+          4
+        ],
+        [
+          0
+        ],
+        [
+          7
+        ]
+      ],
+      "output": [],
+      "steps": [
+        {
+          "left": 2,
+          "right": 3,
+          "retain": [
+            2,
+            3
+          ]
+        },
+        {
+          "left": 4,
+          "right": 10,
+          "retain": [
+            3,
+            4
+          ]
+        },
+        {
+          "left": 0,
+          "right": 8,
+          "retain": [
+            0
+          ]
+        },
+        {
+          "left": 1,
+          "right": 12,
+          "retain": [
+            1
+          ]
+        },
+        {
+          "left": 5,
+          "right": 13,
+          "retain": [
+            3,
+            5
+          ]
+        },
+        {
+          "left": 6,
+          "right": 14,
+          "retain": [
+            3,
+            5
+          ]
+        },
+        {
+          "left": 11,
+          "right": 15,
+          "retain": [
+            4,
+            5
+          ]
+        },
+        {
+          "left": 7,
+          "right": 16,
+          "retain": [
+            7
+          ]
+        },
+        {
+          "left": 9,
+          "right": 17,
+          "retain": []
+        }
+      ]
+    }
+  },
+  "complexities": {
+    "random": {
+      "work": 300,
+      "largest_tensor": 64,
+      "largest_generated": 64,
+      "steps": [
+        {
+          "result": 10,
+          "left": 5,
+          "right": 0,
+          "union": [
+            0,
+            1,
+            3,
+            5
+          ],
+          "retain": [
+            0,
+            1,
+            3,
+            5
+          ],
+          "work": 16,
+          "entries": 16
+        },
+        {
+          "result": 11,
+          "left": 1,
+          "right": 8,
+          "union": [
+            0,
+            1
+          ],
+          "retain": [
+            0,
+            1
+          ],
+          "work": 4,
+          "entries": 4
+        },
+        {
+          "result": 12,
+          "left": 11,
+          "right": 3,
+          "union": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "retain": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "work": 16,
+          "entries": 16
+        },
+        {
+          "result": 13,
+          "left": 2,
+          "right": 6,
+          "union": [
+            2,
+            5,
+            6
+          ],
+          "retain": [
+            2,
+            5
+          ],
+          "work": 8,
+          "entries": 4
+        },
+        {
+          "result": 14,
+          "left": 10,
+          "right": 7,
+          "union": [
+            0,
+            1,
+            3,
+            4,
+            5,
+            7
+          ],
+          "retain": [
+            0,
+            1,
+            3,
+            4,
+            5,
+            7
+          ],
+          "work": 64,
+          "entries": 64
+        },
+        {
+          "result": 15,
+          "left": 12,
+          "right": 4,
+          "union": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "retain": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "work": 32,
+          "entries": 32
+        },
+        {
+          "result": 16,
+          "left": 15,
+          "right": 13,
+          "union": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "retain": [
+            0,
+            1,
+            3,
+            4,
+            5
+          ],
+          "work": 64,
+          "entries": 32
+        },
+        {
+          "result": 17,
+          "left": 14,
+          "right": 9,
+          "union": [
+            0,
+            1,
+            3,
+            4,
+            5,
+            7
+          ],
+          "retain": [
+            0,
+            1,
+            3,
+            4,
+            5
+          ],
+          "work": 64,
+          "entries": 32
+        },
+        {
+          "result": 18,
+          "left": 16,
+          "right": 17,
+          "union": [
+            0,
+            1,
+            3,
+            4,
+            5
+          ],
+          "retain": [],
+          "work": 32,
+          "entries": 1
+        }
+      ]
+    },
+    "greedy": {
+      "work": 52,
+      "largest_tensor": 8,
+      "largest_generated": 4,
+      "steps": [
+        {
+          "result": 10,
+          "left": 2,
+          "right": 3,
+          "union": [
+            2,
+            3
+          ],
+          "retain": [
+            2,
+            3
+          ],
+          "work": 4,
+          "entries": 4
+        },
+        {
+          "result": 11,
+          "left": 4,
+          "right": 10,
+          "union": [
+            2,
+            3,
+            4
+          ],
+          "retain": [
+            3,
+            4
+          ],
+          "work": 8,
+          "entries": 4
+        },
+        {
+          "result": 12,
+          "left": 0,
+          "right": 8,
+          "union": [
+            0
+          ],
+          "retain": [
+            0
+          ],
+          "work": 2,
+          "entries": 2
+        },
+        {
+          "result": 13,
+          "left": 1,
+          "right": 12,
+          "union": [
+            0,
+            1
+          ],
+          "retain": [
+            1
+          ],
+          "work": 4,
+          "entries": 2
+        },
+        {
+          "result": 14,
+          "left": 5,
+          "right": 13,
+          "union": [
+            1,
+            3,
+            5
+          ],
+          "retain": [
+            3,
+            5
+          ],
+          "work": 8,
+          "entries": 4
+        },
+        {
+          "result": 15,
+          "left": 6,
+          "right": 14,
+          "union": [
+            3,
+            5,
+            6
+          ],
+          "retain": [
+            3,
+            5
+          ],
+          "work": 8,
+          "entries": 4
+        },
+        {
+          "result": 16,
+          "left": 11,
+          "right": 15,
+          "union": [
+            3,
+            4,
+            5
+          ],
+          "retain": [
+            4,
+            5
+          ],
+          "work": 8,
+          "entries": 4
+        },
+        {
+          "result": 17,
+          "left": 7,
+          "right": 16,
+          "union": [
+            4,
+            5,
+            7
+          ],
+          "retain": [
+            7
+          ],
+          "work": 8,
+          "entries": 2
+        },
+        {
+          "result": 18,
+          "left": 9,
+          "right": 17,
+          "union": [
+            7
+          ],
+          "retain": [],
+          "work": 2,
+          "entries": 1
+        }
+      ]
+    }
+  },
+  "recounted": {
+    "random": {
+      "work": 300,
+      "largest_tensor": 64,
+      "largest_generated": 64
+    },
+    "greedy": {
+      "work": 52,
+      "largest_tensor": 8,
+      "largest_generated": 4
+    }
+  },
+  "exhaustive_minimum_work": {
+    "prior": 44,
+    "AD": 50,
+    "ADX": 52
+  }
+}
