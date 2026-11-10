@@ -1,0 +1,41 @@
+usage = "infer --model asia.uai --evidence AD --out artifacts/AD"
+description = "Infer probabilities from local factors with explicit model, evidence and output."
+
+[args]
+model = "path to a MARKOV UAI model"
+evidence = "prior: none; AD: A=0,D=0; ADX: A=0,D=0,X=0; promedus: use --observations"
+out = "directory for this run"
+
+[writes]
+"<out>/run.json" = "observations, evidence mass, node marginals and T,L joint; full precision"
+stdout = "evidence probability, disease probabilities and discrepancies"
+
+[args.ordering]
+order = "scalar evidence order: random or greedy; default greedy; treesa also available"
+seed = "random-order seed, required for random only"
+plan = "replay a saved scalar-query plan"
+analyze = "analyze a saved scalar-query plan without contraction"
+
+[writes.ordering]
+"<out>/order.json" = "contraction plan, planning method and settings"
+"<out>/complexity.json" = "work: sum of products of dimensions in input unions; largest input/intermediate; per-step labels and costs"
+# --order, --plan and --analyze are mutually exclusive.
+
+[args.bp]
+method = "exact or bp; default exact"
+damping = "fraction of the normalized proposed message used; required with bp only"
+tolerance = "maximum undamped residual for stopping; required with bp only"
+max-sweeps = "iteration limit, not a convergence claim; required with bp only"
+
+[writes.bp]
+"<out>/run.json" = "observations, settings, final marginals, and every state's beliefs, undamped residual and cumulative update work"
+stdout = "BP sweep, undamped residual and cumulative update work"
+
+[args.promedus]
+observations = "required UAI evidence-file path in promedus mode"
+queries = "comma-delimited exact query IDs; the benchmark uses 59,102,139"
+
+[writes.promedus]
+"<out>/run.json" = "log10 evidence partition sum, state-ordered marginals and runtime"
+"<out>/query-plans.json" = "three open-index adaptations of the saved scalar tree"
+"<out>/query-complexities.json" = "costs of the separate open-index contractions"

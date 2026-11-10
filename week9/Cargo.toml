@@ -1,0 +1,20 @@
+[package]
+name = "week9-inference"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.96"
+
+[[bin]]
+name = "infer"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = "1"
+clap = { version = "4.5", features = ["derive"] }
+omeco = "=0.2.6"
+rand = "0.8.5"
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["float_roundtrip"] }
+tenferro-cpu = { version = "=0.11.0", default-features = false, features = ["native"] }
+tenferro-einsum = { version = "=0.11.0", default-features = false, features = ["native"] }
+tenferro-tensor = { version = "=0.11.0", default-features = false }
