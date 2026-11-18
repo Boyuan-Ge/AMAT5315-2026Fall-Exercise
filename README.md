@@ -15,6 +15,7 @@ This public repository contains Boyuan's weekly exercises and learning records f
 | [Week 7](week7/) | Diffusion, DDIM, flow matching, pretrained JAX image generation, and RePaint inpainting | [`week7/README.md`](week7/README.md), with all 11 result figures and 3 movies embedded |
 | [Week 8](week8/) | Embeddings, n-grams, key-value memories, transformer language models, and Chinchilla scaling laws | [`week8/README.md`](week8/README.md), with all 13 result figures embedded |
 | [Week 9](week9/) | Exact tensor inference, contraction-order search, belief propagation, and Promedus_14 | [`week9/README.md`](week9/README.md), with all seven result figures embedded |
+| [Week 10](week10/) | SVD compression, boundary MPS, periodic TRG, and the Ising critical temperature | [`week10/README.md`](week10/README.md), with all three result figures embedded |
 
 Repository-level files stay at the top level intentionally:
 
