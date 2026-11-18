@@ -4,7 +4,7 @@ Boyuan's implementation of all three hands-on parts: Rust SVD evidence, canonica
 
 **Main result:** open-boundary MPS gives **Tc = 2.267506**, and periodic TRG gives **Tc = 2.269205**, compared with **2/log(1+sqrt(2)) = 2.269185314**. Their relative errors are **0.0740%** and **0.000855%**, respectively. All required tolerances pass: five Rust tests and 7,890 independent numerical checks.
 
-The three figures are displayed directly below. The learning sheet requires generated tensors, data, figures and archives to remain out of Git. Therefore the PNGs and raw-evidence archive are [Release assets](https://github.com/Boyuan-Ge/AMAT5315-2026Fall-Exercise/releases/tag/week10-results), not tracked files; the README embeds those images, rather than asking the reader to open image links. Local originals remain in `week10/artifacts/` and `week10/runs/`.
+The three figures are displayed directly below. The learning sheet requires generated tensors, data, figures and archives to remain out of Git. Therefore the PNGs, numerical summary and compact scan-table archive are [Release assets](https://github.com/Boyuan-Ge/AMAT5315-2026Fall-Exercise/releases/tag/week10-results), not tracked files; the README embeds those images, rather than asking the reader to open image links. Full original evidence remains locally in `week10/artifacts/` and `week10/runs/` and can be regenerated from the committed source.
 
 ## Reproduction and environment
 
@@ -28,14 +28,14 @@ thermo --method boundary --l 64 --k 0.45 --chi 16 --out runs/boundary64-new
 thermo --method trg --l 1024 --k 0.44 --chi 16 --out runs/trg1024-new
 ```
 
-To verify already-generated local or extracted Release evidence without rerunning the solver:
+To independently verify already-generated **full local evidence** without rerunning the solver:
 
 ```bash
 OPENBLAS_NUM_THREADS=2 .venv/bin/python scripts/evidence.py
 .venv/bin/python scripts/audit.py
 ```
 
-For the archive, download `week10-evidence.tar.gz` from the Release, then run `tar -xzf week10-evidence.tar.gz` **inside `week10/`**, before these verification commands. The archive contains `runs/` and `artifacts/`, including the full final-peak stencil runs, coarse/refined g(K) tables, timings, checks, scales, tensors, split factors, spectra and SHA-256 inventory. It contains no environment, access credentials or private material. Do not add the archive or its extracted files to Git.
+For the compact results, download `week10-tables.tar.gz` from the Release and run `tar -xzf week10-tables.tar.gz` **inside `week10/`**. It contains the coarse/refined g(K) tables, timings, small-run table, full numerical-check summary and the original raw-file SHA-256 inventory. This approximately 785 KiB archive is for inspecting results; it does **not** contain the roughly 1.1 GiB of full raw tensors, scales and factors. Independent tensor replay and hash verification require the retained local `runs/`, or regenerating it with `scripts/run.sh`. A complete raw-evidence archive is also retained locally, but is not uploaded. No generated archive or extracted data should be added to Git.
 
 - Measured environment: Ubuntu on WSL2 x86_64, Intel Core i5-13600K (20 logical CPUs), Rust **1.96.0**, Python **3.14.4**, NumPy **2.5.3**, Matplotlib **3.11.2**. Dependencies are pinned in `Cargo.lock` and `uv.lock`.
 - Rust linear algebra: **t4a-faer 0.33.0**, CPU float64, sequential thin SVD and matrix multiplication; no CUDA, autodiff or Monte Carlo. Up to six independent solver processes run simultaneously. Reported per-run times include computation and raw-evidence writes; summed times are not elapsed wall-clock times or isolated performance benchmarks.
@@ -187,7 +187,7 @@ The prescribed million-spin case L=1024, K=.44, chi=16 gives **g=0.9287239625770
 | Nine-point refinement at both ranks, per size | `artifacts/{boundary,trg}-refined.json` |
 | Rank, step, all-size and largest-two comparisons | `artifacts/summary.json` and tables beside the figures above |
 | Small-square g and energy-variance checks | `artifacts/small-runs.json`, `artifacts/summary.json` |
-| Full peak-stencil tensors, scales, diagnostics and timings | `runs/boundary/`, `runs/trg/`; all are included in the Release archive |
+| Full peak-stencil tensors, scales, diagnostics and timings | Retained locally in `runs/boundary/`, `runs/trg/`; reproducible from source; scan tables and timings are also in the compact Release archive |
 | Independent final contractions and small TRG round replay | `scripts/evidence.py`; 7,890 recorded numerical checks |
 | Source-only repository and reproducibility | Git ignores `runs/`, `artifacts/`, `target/`, `.venv/`; locks, specification and comparison scripts are committed |
 
