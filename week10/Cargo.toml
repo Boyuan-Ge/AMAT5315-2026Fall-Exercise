@@ -1,0 +1,18 @@
+[package]
+name = "week10-thermo"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.96"
+
+[[bin]]
+name = "thermo"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = "1"
+clap = { version = "4.5", features = ["derive"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["float_roundtrip"] }
+rand = "=0.8.8"
+rand_chacha = "=0.3.1"
+faer = { package = "t4a-faer", version = "=0.33.0", default-features = false, features = ["std", "linalg"] }
