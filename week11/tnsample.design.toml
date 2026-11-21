@@ -1,0 +1,33 @@
+usage = "tnsample --mode gadgets --seed 2026 --out runs/gadgets"
+description = "Hard problems as magnets and tensor networks"
+
+[args]
+seed = "RNG seed for lattice and draws"
+out = "New directory for raw evidence"
+
+[args.gadgets]
+mode = "Enumerate AND, OR, NOT, COPY, SET0, SET1, and XOR (minimize over helper), and all 16 states of AND-NOT-SET1."
+
+[args.magnet]
+l = "Open lattice side length"
+p-af = "Independent probability of an antiferromagnetic bond"
+input = "Alternative: pred SpinGlass bundle"
+beta = "Inverse temperature, required for magnet counts and draws"
+order = "omeco greedy or treesa (default)"
+samples = "Number of independent draws"
+
+[args.plan]
+mode = "Plan only; report variables, log2 operation count tc, and log2 peak tensor entries sc."
+
+[args.count]
+mode = "Contract once with log-sum-exp and min-plus/count; report log Z, minimum energy and degeneracy."
+
+[args.sample]
+mode = "Reuse the stored contraction tree to draw states conditional on each parent's retained indices."
+
+[args.nqueens]
+n = "Board size 4–10; carry tensors allow 000, 011, 101. Lines start at 0; rows and columns end at 1; diagonals have free ends."
+
+[writes]
+stdout = "TSV: mode, metric, value, runtime_ms"
+"<out>/run.json" = "Schema, settings, seed, tree, summary and raw evidence"
