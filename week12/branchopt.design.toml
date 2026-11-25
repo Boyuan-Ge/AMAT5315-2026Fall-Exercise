@@ -32,3 +32,33 @@ policy = "most-frac | strong | neural | root-neural"
 search = "Depth first, no initial incumbent. Prune by bound at 1e-6. Visit nearest bit first (1 at half)."
 policies = "Most-frac: nearest to half. Strong: two child LPs per fractional candidate, product of gains, 1e6 for a prunable child; lowest index breaks ties."
 evidence = "Five-node tetrahedron trace; energy, reference error, explored nodes, LP solves and elapsed time for each graph."
+
+[args.labels]
+export-labels = "Save Strong Branching teacher data for 48 instances."
+
+[benchmark.bnb.features]
+labels = """
+Save nodes with at least two candidates, at most 80 nodes per graph.
+IDs 0–35 train, 36–47 validate. Save per-candidate gains, score, pruned child count.
+Twelve features: LP x, twice distance to the nearest integer, field, absolute field,
+normalized degree, signed bond bias, effective field and absolute effective field,
+mean normalized bond dual magnitude, mean relaxed bond discrepancy,
+mean neighbor fractional distance (fixed neighbors contribute zero), clipped incumbent gap ratio.
+"""
+
+[writes.labels]
+"<out>/dataset.json" = "Disjoint train/validation groups with graph data and features."
+
+[args.eval]
+model = "Path to the saved JAX model JSON."
+
+[benchmark.eval]
+policies = """
+Check six JAX probes. Run most-frac, strong, neural, and root-neural.
+Neural scores only the fractional candidates to choose the split. The LP decides all pruning.
+Save energy errors, nodes, LP solves, total/LP/inference times and first two splits.
+"""
+
+[benchmark.eval.root_neural]
+policy = "Compute all root scores once, standardize with std floor 1e-6, and rank candidates by root score plus 3 times frac_dist."
+timing = "Report total search wall time, LP time, and feature-plus-MLP time separately."

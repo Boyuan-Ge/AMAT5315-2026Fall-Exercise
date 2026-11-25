@@ -17,6 +17,7 @@ This public repository contains Boyuan's weekly exercises and learning records f
 | [Week 9](week9/) | Exact tensor inference, contraction-order search, belief propagation, and Promedus_14 | [`week9/README.md`](week9/README.md), with all seven result figures embedded |
 | [Week 10](week10/) | SVD compression, boundary MPS, periodic TRG, and the Ising critical temperature | [`week10/README.md`](week10/README.md), with all three result figures embedded |
 | [Week 11](week11/) | Problem reductions, spin-glass contraction, and N-queens sampling | [`week11/README.md`](week11/README.md), with all three result figures embedded |
+| [Week 12](week12/) | LP relaxations, exact branch-and-bound, and learned branching for spin glasses | [`week12/README.md`](week12/README.md), with all four result figures embedded |
 
 Repository-level files stay at the top level intentionally:
 

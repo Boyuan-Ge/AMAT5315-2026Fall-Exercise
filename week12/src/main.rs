@@ -1,4 +1,5 @@
 mod bnb;
+mod learned;
 use anyhow::{Result, ensure};
 use clap::Parser;
 use highs::{HighsModelStatus, RowProblem, Sense};
@@ -7,10 +8,14 @@ use std::{collections::BTreeSet, fs, path::PathBuf, time::Instant};
 
 #[derive(Parser)]
 struct Args {
-    #[arg(long,value_parser=["gap","bnb"])]
+    #[arg(long,value_parser=["gap","bnb","eval"])]
     mode: String,
     #[arg(long,default_value="most-frac",value_parser=["most-frac","strong"])]
     policy: String,
+    #[arg(long)]
+    export_labels: bool,
+    #[arg(long)]
+    model: Option<PathBuf>,
     #[arg(long)]
     spins: usize,
     #[arg(long)]
@@ -38,6 +43,12 @@ impl SplitMix {
 struct Glass {
     bonds: Vec<(usize, usize, i32)>,
     fields: Vec<i32>,
+}
+struct Relaxation {
+    bound: f64,
+    x: Vec<f64>,
+    z: Vec<f64>,
+    dual: Vec<f64>,
 }
 impl Glass {
     fn random(n: usize, m: usize, seed: u64, id: usize) -> Result<Self> {
@@ -84,6 +95,10 @@ impl Glass {
                 .sum::<i32>()
     }
     fn solve(&self, integer: bool, fix: &[Option<i32>]) -> Result<(f64, Vec<f64>)> {
+        let r = self.relaxation(integer, fix, false)?;
+        Ok((r.bound, r.x))
+    }
+    fn relaxation(&self, integer: bool, fix: &[Option<i32>], features: bool) -> Result<Relaxation> {
         let mut p = RowProblem::default();
         let x: Vec<_> = self
             .fields
@@ -133,7 +148,20 @@ impl Glass {
                 .zip(&val[x.len()..])
                 .map(|(&(_, _, j), &v)| j as f64 * (1. - 2. * v))
                 .sum::<f64>();
-        Ok((f, val[..x.len()].to_vec()))
+        Ok(Relaxation {
+            bound: f,
+            x: val[..x.len()].to_vec(),
+            z: if features {
+                val[x.len()..].to_vec()
+            } else {
+                vec![]
+            },
+            dual: if features {
+                sol.dual_rows().to_vec()
+            } else {
+                vec![]
+            },
+        })
     }
     fn gap(&self, id: usize) -> Result<Value> {
         let fix = vec![None; self.fields.len()];
@@ -193,6 +221,13 @@ fn main() -> Result<()> {
     if a.mode == "bnb" {
         return bnb::benchmark(&a, start);
     }
+    if a.mode == "eval" {
+        return bnb::evaluate(&a, start);
+    }
+    ensure!(
+        !a.export_labels && a.model.is_none(),
+        "gap does not use labels or a model"
+    );
     let rows = (0..a.count)
         .map(|id| Glass::random(a.spins, a.edges, a.seed, id)?.gap(id))
         .collect::<Result<Vec<_>>>()?;
