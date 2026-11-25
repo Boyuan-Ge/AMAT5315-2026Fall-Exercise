@@ -1,0 +1,34 @@
+usage = "branchopt --mode gap --spins 22 --edges 52 --count 16 --seed 2026 --out artifacts/gap"
+description = "Solve spin-glass integer programs and compare branching rules"
+
+[args]
+mode = "study mode: gap | bnb | eval"
+spins = "number of spins"
+edges = "number of undirected bonds"
+count = "number of deterministic random instances"
+seed = "SplitMix64 seed"
+out = "directory for raw evidence"
+
+[benchmark.gap]
+highs = { presolve = false, threads = 1 }
+model = """
+Minimize sum_e J_e (1-2z_e) + sum_i h_i (1-2x_i).
+Only the spins are binary in the integer model. In the LP all variables are in [0,1].
+For e=(u,v), z <= x_u+x_v, z <= 2-x_u-x_v, z >= x_u-x_v, z >= x_v-x_u.
+"""
+square = "Cycle 0-1-2-3-0 with couplings (1,1,1,-1) and zero fields."
+diet = "Minimize 6x1 + 3.5x2 subject to 7x2>=8, 4x1+2x2>=15, 2x1+x2>=3, x>=0."
+generator = "Use the learning-sheet SplitMix64 generator: minimum degree two first, then uniform edges, lexicographic bond order, couplings ±1, fields -1/0/+1."
+evidence = "LP bound, exact optimum, gap, fractional counts, nearest-rounded energy and excess, with raw assignments."
+
+[writes]
+stdout = "TSV: mode, metric, value, runtime_ms"
+"<out>/run.json" = "schema, mode, seed, parameters, summary and raw evidence"
+
+[args.bnb]
+policy = "most-frac | strong | neural | root-neural"
+
+[benchmark.bnb]
+search = "Depth first, no initial incumbent. Prune by bound at 1e-6. Visit nearest bit first (1 at half)."
+policies = "Most-frac: nearest to half. Strong: two child LPs per fractional candidate, product of gains, 1e6 for a prunable child; lowest index breaks ties."
+evidence = "Five-node tetrahedron trace; energy, reference error, explored nodes, LP solves and elapsed time for each graph."
